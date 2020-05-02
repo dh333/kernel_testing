@@ -148,7 +148,6 @@
 		};
 	};
 
-<<<<<<< HEAD:arch/arm/boot/dts/qcom/sdw3100-apq8009w-wtp.dts
 	qcom,bg-rsb {
 		compatible = "qcom,bg-rsb";
 		vdd-ldo1-supply = <&pm660_l11>;
@@ -160,7 +159,6 @@
 		qcom,bg-reset-gpio = <&pm660_gpios 5 0>;
 		ssr-reg1-supply = <&pm660_l3>;
 		ssr-reg2-supply = <&pm660_l9>;
-=======
 	qcom,msm-thermal {
 		vdd-dig-supply = <&pm660_s2_floor_corner>;
 
@@ -187,7 +185,6 @@
 			qcom,soc-low-threshold = <10>;
 			qcom,thermal-handle = <&msm_thermal_freq>;
 		};
->>>>>>> 14eb53941c5374e2300b514b3a860507607404a0:arch/arm/boot/dts/qcom/msm8909w-bg-wtp-v2.dts
 	};
 };
 
