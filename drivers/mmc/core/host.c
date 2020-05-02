@@ -319,7 +319,10 @@ void mmc_retune_enable(struct mmc_host *host)
 		mod_timer(&host->retune_timer,
 			  jiffies + host->retune_period * HZ);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mmc_retune_enable);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 void mmc_retune_disable(struct mmc_host *host)
 {
@@ -328,7 +331,10 @@ void mmc_retune_disable(struct mmc_host *host)
 	host->retune_now = 0;
 	host->need_retune = 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mmc_retune_disable);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 void mmc_retune_timer_stop(struct mmc_host *host)
 {

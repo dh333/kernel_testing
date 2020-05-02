@@ -65,7 +65,10 @@ struct tfa98xx {
 	int profile_count;
 	int has_drc;
 	int rate;
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-11,change for reset */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	int rst_gpio;
 	struct work_struct stop_work;
     int stop_ref;

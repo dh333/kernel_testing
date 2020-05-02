@@ -77,7 +77,10 @@ int tfa98xx_select_mode(struct tfa98xx *tfa98xx, enum Tfa98xx_Mode mode);
 int tfa98xx_write_dsp_mem(struct tfa98xx *tfa98xx, struct nxpTfaDspMem *cfmem);
 int tfa98xx_write_filter(struct tfa98xx *tfa98xx, struct nxpTfaBiquadSettings *bq);
 int tfa98xx_powerdown(struct tfa98xx *tfa98xx, int powerdown);
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-05-29, add for calibration*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 int tfa98xx_dsp_get_calibration_impedance(struct tfa98xx *tfa98xx, u32 *re25);
 int tfaRunColdStartup(struct tfa98xx *tfa98xx);
 int tfa98xx_restore_mtp(struct tfa98xx *tfa98xx);

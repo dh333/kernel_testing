@@ -172,7 +172,10 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(chg_protect_status),
 	POWER_SUPPLY_ATTR(fastchg_status),
 	POWER_SUPPLY_ATTR(fastchg_starting),
+<<<<<<< HEAD
 	POWER_SUPPLY_ATTR(ng_count),
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	POWER_SUPPLY_ATTR(update_lcd_is_off),
 	POWER_SUPPLY_ATTR(check_usb_unplug),
 	POWER_SUPPLY_ATTR(switch_dash),

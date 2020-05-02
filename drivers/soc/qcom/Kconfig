@@ -912,6 +912,7 @@ config QCOM_EARLY_RANDOM
 	  may not be truly random. Select this option to make an early call
 	  to get some random data to put in the pool. If unsure, say N.
 
+<<<<<<< HEAD
 config QCOM_QDSS_BRIDGE
 	bool "Configure bridge driver for Qualcomm Technologies, Inc. MDM"
 	depends on MSM_MHI
@@ -930,6 +931,12 @@ config MSM_BG_GLINK
 	  between MSM and BG over glink transport protocol. This driver
 	  provides read and write interface via char device.This driver is
 	  used by the audio codec driver to interface with BG.
+=======
+config RF_CABLE_DETECT
+	bool "detect RF cable connection"
+	help
+	  detect RF cable connection for different RF configuration
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 config WCD_DSP_GLINK
 	tristate "WCD DSP GLINK Driver"

@@ -16,7 +16,10 @@
 #include "apq8053.dtsi"
 #include "msm-pmi8950.dtsi"
 #include "msm8953-mdss-panels.dtsi"
+<<<<<<< HEAD
 #include "apq8053-iot-memory.dtsi"
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #include "msm8953-pmi8950.dtsi"
 #include "msm8953-ipc.dtsi"
 

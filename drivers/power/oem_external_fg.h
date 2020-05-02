@@ -60,7 +60,10 @@ struct external_battery_gauge {
 	int (*set_normal_to_warm_false)	(void);
 	int (*get_adapter_update)	(void);
 	bool (*get_fast_chg_ing)	(void);
+<<<<<<< HEAD
 	int (*get_ng_count)(void);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	bool (*get_fast_low_temp_full)	(void);
 	int (*set_low_temp_full_false)	(void);
 	int (*set_alow_reading) (int enable);

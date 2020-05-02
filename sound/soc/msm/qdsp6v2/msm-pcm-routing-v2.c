@@ -35,7 +35,7 @@
 #include <sound/audio_cal_utils.h>
 #include <sound/audio_effects.h>
 #include <sound/hwdep.h>
-
+#include <sound/sounddebug.h>
 #include "msm-pcm-routing-v2.h"
 #include "msm-pcm-routing-devdep.h"
 #include "msm-qti-pp-config.h"
@@ -47,7 +47,10 @@
 
 static int get_cal_path(int path_type);
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #define INT_RX_VOL_MAX_STEPS 0x2000
 #define INT_RX_VOL_GAIN 0x2000
 static int msm_route_afe_pri_mi2s_vol_control = 0x2000;
@@ -2344,7 +2347,10 @@ static int msm_routing_put_port_mixer(struct snd_kcontrol *kcontrol,
 }
 
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static int msm_routing_get_afe_pri_mi2s_vol_mixer(struct snd_kcontrol *kcontrol,
 				struct snd_ctl_elem_value *ucontrol)
 {
@@ -2679,6 +2685,7 @@ static int msm_pcm_channel_weight_info(struct snd_kcontrol *kcontrol,
 	uinfo->count = ADM_MAX_CHANNELS;
 	uinfo->value.integer.min = 0;
 	uinfo->value.integer.max = WEIGHT_0_DB;
+
 
 	return 0;
 }
@@ -3050,6 +3057,7 @@ static const struct snd_kcontrol_new channel_mixer_controls[] = {
 	.private_value = (unsigned long)&(mm1_ch8_enum)
 	},
 };
+
 static int msm_ec_ref_ch_get(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_value *ucontrol)
 {
@@ -11304,7 +11312,10 @@ static const struct snd_kcontrol_new aanc_slim_0_rx_mux[] = {
 		msm_routing_slim_0_rx_aanc_mux_put)
 };
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static const struct snd_kcontrol_new afe_pri_mi2s_vol_mixer_controls[] = {
 	SOC_SINGLE_EXT_TLV("PRI_MI2S_RX Volume", SND_SOC_NOPM, 0,
 	INT_RX_VOL_GAIN, 0, msm_routing_get_afe_pri_mi2s_vol_mixer,
@@ -15098,7 +15109,10 @@ static const struct snd_soc_dapm_route intercon[] = {
 	{"SLIMBUS_0_RX Port Mixer", "SEC_MI2S_TX", "SEC_MI2S_TX"},
 	{"SLIMBUS_0_RX Port Mixer", "TERT_MI2S_TX", "TERT_MI2S_TX"},
 	{"SLIMBUS_0_RX Port Mixer", "QUAT_MI2S_TX", "QUAT_MI2S_TX"},
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	{"SLIMBUS_0_RX Port Mixer", "PRI_MI2S_RX", "PRI_MI2S_RX"},
 	{"SLIMBUS_0_RX Port Mixer", "SEC_MI2S_RX", "SEC_MI2S_RX"},
 	{"SLIMBUS_0_RX Port Mixer", "TERT_MI2S_RX", "TERT_MI2S_RX"},
@@ -15821,7 +15835,10 @@ static int msm_routing_probe(struct snd_soc_platform *platform)
 				stereo_to_custom_stereo_controls,
 			ARRAY_SIZE(stereo_to_custom_stereo_controls));
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	snd_soc_add_platform_controls(platform,
 			afe_pri_mi2s_vol_mixer_controls,
 			ARRAY_SIZE(afe_pri_mi2s_vol_mixer_controls));

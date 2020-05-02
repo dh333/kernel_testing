@@ -51,7 +51,10 @@ struct msm_mi2s_pdata {
 	u16 rx_sd_lines;
 	u16 tx_sd_lines;
 	u16 intf_id;
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     u16 slave;
     u32 ext_mclk_rate;
 };

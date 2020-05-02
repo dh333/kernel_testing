@@ -8,6 +8,7 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <trace/events/sched.h>
+#include <../drivers/oneplus/coretech/opchain/opchain_helper.h>
 
 int sched_rr_timeslice = RR_TIMESLICE;
 
@@ -1777,6 +1778,15 @@ static int find_lowest_rq_hmp(struct task_struct *task)
 			if (!restrict_cluster)
 				cpu_load = scale_load_to_cpu(cpu_load, i);
 
+            if (best_cpu != -1) {
+                if (opc_get_claim_on_cpu(i))
+                    continue;
+                else if (opc_get_claim_on_cpu(best_cpu)) {
+                    min_load = cpu_load;
+                    best_cpu = i;
+                    continue;
+                }
+            }
 			if (cpu_load < min_load ||
 				(cpu_load == min_load &&
 				(i == prev_cpu || (best_cpu != prev_cpu &&

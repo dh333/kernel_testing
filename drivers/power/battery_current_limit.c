@@ -285,10 +285,16 @@ static void update_cpu_freq(void)
 static void power_supply_callback(struct power_supply *psy)
 {
 	static struct power_supply *bms_psy;
+<<<<<<< HEAD
 /* taokai@bsp add for detecting usb status 2016.03.11 */
 	static struct power_supply *usb_psy;
 	int usb_state;
 	bool is_usb_present = false;
+=======
+	static struct power_supply *usb_psy;
+	int usb_state;
+	bool is_usb_present;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	union power_supply_propval ret = {0,};
 	int battery_percentage;
 	enum bcl_threshold_state prev_soc_state;
@@ -297,7 +303,10 @@ static void power_supply_callback(struct power_supply *psy)
 		pr_debug("BCL is not enabled\n");
 		return;
 	}
+<<<<<<< HEAD
 /* taokai@bsp add for detecting usb status 2016.03.11 */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	if (!usb_psy)
 		usb_psy = power_supply_get_by_name("usb");
 	if (usb_psy) {
@@ -316,7 +325,10 @@ static void power_supply_callback(struct power_supply *psy)
 		pr_debug("Battery SOC reported:%d", battery_soc_val);
 		trace_bcl_sw_mitigation("SoC reported", battery_soc_val);
 		prev_soc_state = bcl_soc_state;
+<<<<<<< HEAD
 /* taokai@bsp add for detecting usb status 2016.03.11 */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		pr_debug("is_usb_present:%d", is_usb_present);
 		if(is_usb_present)
 			bcl_soc_state = BCL_HIGH_THRESHOLD;

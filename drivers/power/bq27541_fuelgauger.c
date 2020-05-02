@@ -40,6 +40,10 @@
 #include <linux/wakelock.h>
 #include "oem_external_fg.h"
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #define DRIVER_VERSION			"1.1.0"
 /* Bq27541 standard data commands */
 #define BQ27541_REG_CNTL		0x00
@@ -161,7 +165,10 @@ struct bq27541_device_info {
 	unsigned long	soc_store_time;
 };
 
+<<<<<<< HEAD
 /*add by yangrujin@bsp 2016/3/16, reduce bq resume time*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 #include <linux/workqueue.h>
 
@@ -692,7 +699,11 @@ static int bq27541_battery_soc(struct bq27541_device_info *di, int suspend_time_
 	bool fg_soc_changed=false;
 	/* Add for get right soc when sleep long time */
 	if(atomic_read(&di->suspended) == 1) {
+<<<<<<< HEAD
 		dev_dbg(di->dev, "di->suspended di->soc_pre=%d\n", di->soc_pre);
+=======
+		dev_warn(di->dev, "di->suspended di->soc_pre=%d\n", di->soc_pre);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		return di->soc_pre;
 	}
 	if(di->alow_reading) {
@@ -1196,12 +1207,20 @@ static struct platform_device this_device = {
 
 static void update_pre_capacity_func(struct work_struct *w)
 {
+<<<<<<< HEAD
 	pr_debug("enter\n");
+=======
+	pr_info("enter\n");
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	bq27541_set_alow_reading(true);
 	bq27541_battery_soc(bq27541_di, update_pre_capacity_data.suspend_time);
 	bq27541_set_alow_reading(false);
 	wake_unlock(&bq27541_di->update_soc_wake_lock);
+<<<<<<< HEAD
 	pr_debug("exit\n");
+=======
+	pr_info("exit\n");
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 }
 
 #define MAX_RETRY_COUNT	5
@@ -1228,6 +1247,10 @@ static int bq27541_parse_dt(struct bq27541_device_info *di)
 static int bq27541_battery_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
+<<<<<<< HEAD
+=======
+	char *name;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	struct bq27541_device_info *di;
 	struct bq27541_access_methods *bus;
 	int num;
@@ -1244,11 +1267,25 @@ static int bq27541_battery_probe(struct i2c_client *client,
 	if (retval < 0)
 		return retval;
 
+<<<<<<< HEAD
+=======
+	name = kasprintf(GFP_KERNEL, "%s-%d", id->name, num);
+	if (!name) {
+		pr_err("failed to allocate device name\n");
+		retval = -ENOMEM;
+		goto batt_failed_1;
+	}
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	di = kzalloc(sizeof(*di), GFP_KERNEL);
 	if (!di) {
 		pr_err("failed to allocate device info data\n");
 		retval = -ENOMEM;
+<<<<<<< HEAD
 		goto batt_failed_1;
+=======
+		goto batt_failed_2;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 	di->id = num;
 
@@ -1256,7 +1293,11 @@ static int bq27541_battery_probe(struct i2c_client *client,
 	if (!bus) {
 		pr_err("failed to allocate access method data\n");
 		retval = -ENOMEM;
+<<<<<<< HEAD
 		goto batt_failed_2;
+=======
+		goto batt_failed_3;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 
 	i2c_set_clientdata(client, di);
@@ -1283,19 +1324,33 @@ static int bq27541_battery_probe(struct i2c_client *client,
 		retval = sysfs_create_group(&this_device.dev.kobj,
 				&fs_attr_group);
 		if (retval)
+<<<<<<< HEAD
 			goto batt_failed_3;
 	} else
 		goto batt_failed_3;
+=======
+			goto batt_failed_4;
+	} else
+		goto batt_failed_4;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #endif
 
 	if (retval) {
 		pr_err("failed to setup bq27541\n");
+<<<<<<< HEAD
 		goto batt_failed_3;
+=======
+		goto batt_failed_4;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 
 	if (retval) {
 		pr_err("failed to powerup bq27541\n");
+<<<<<<< HEAD
 		goto batt_failed_3;
+=======
+		goto batt_failed_4;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 
 	spin_lock_init(&lock);
@@ -1311,10 +1366,19 @@ static int bq27541_battery_probe(struct i2c_client *client,
 	check_bat_type(di);
 	return 0;
 
+<<<<<<< HEAD
 batt_failed_3:
 	kfree(bus);
 batt_failed_2:
 	kfree(di);
+=======
+batt_failed_4:
+	kfree(bus);
+batt_failed_3:
+	kfree(di);
+batt_failed_2:
+	kfree(name);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 batt_failed_1:
 	mutex_lock(&battery_mutex);
 	idr_remove(&battery_id, num);
@@ -1371,6 +1435,7 @@ static int bq27541_battery_resume(struct i2c_client *client)
 		return 0;
 	}
 	suspend_time =  di->rtc_resume_time - di->rtc_suspend_time;
+<<<<<<< HEAD
 	pr_debug("suspend_time=%d\n", suspend_time);
 	update_pre_capacity_data.suspend_time = suspend_time;
 
@@ -1380,6 +1445,23 @@ static int bq27541_battery_resume(struct i2c_client *client)
 		wake_lock(&di->update_soc_wake_lock);
 		get_current_time(&di->lcd_off_time);
 		queue_delayed_work(update_pre_capacity_data.workqueue,
+=======
+	pr_info("suspend_time=%d\n", suspend_time);
+	update_pre_capacity_data.suspend_time = suspend_time;
+
+	for (ret = 0; ret < NR_CPUS; ret++) {
+		if (cpu_online(ret) && (ret != raw_smp_processor_id()))
+			break;
+	}
+
+	if (di->rtc_resume_time - di->lcd_off_time >= TWO_POINT_FIVE_MINUTES) {
+		pr_err("di->rtc_resume_time - di->lcd_off_time=%ld\n",
+				di->rtc_resume_time - di->lcd_off_time);
+		wake_lock(&di->update_soc_wake_lock);
+		get_current_time(&di->lcd_off_time);
+		queue_delayed_work_on(ret != NR_CPUS ? ret : 0,
+				update_pre_capacity_data.workqueue,
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 				&(update_pre_capacity_data.work), msecs_to_jiffies(1000));
 	}
 	schedule_delayed_work(&bq27541_di->battery_soc_work,

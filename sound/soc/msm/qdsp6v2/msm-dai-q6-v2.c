@@ -3610,7 +3610,10 @@ static int msm_dai_q6_mi2s_dev_probe(struct platform_device *pdev)
 	u32 tx_line = 0;
 	u32  rx_line = 0;
 	u32 mi2s_intf = 0;
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 u32 mi2s_slave = 0;
 u32 mi2s_ext_mclk_rate = 0;
 	struct msm_mi2s_pdata *mi2s_pdata;
@@ -3660,10 +3663,13 @@ u32 mi2s_ext_mclk_rate = 0;
 			"qcom,msm-mi2s-tx-lines");
 		goto free_pdata;
 	}
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
 
 //	dev_dbg(&pdev->dev, "dev name %s Rx line 0x%x , Tx ine 0x%x\n",
 //		dev_name(&pdev->dev), rx_line, tx_line);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	rc = of_property_read_u32(pdev->dev.of_node, "qcom,msm-mi2s-slave",
 				  &mi2s_slave);
@@ -3685,6 +3691,9 @@ u32 mi2s_ext_mclk_rate = 0;
 	mi2s_pdata->tx_sd_lines = tx_line;
 	mi2s_pdata->intf_id = mi2s_intf;
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+
+	mi2s_pdata->slave = mi2s_slave;
+	mi2s_pdata->ext_mclk_rate = mi2s_ext_mclk_rate;
 
 	mi2s_pdata->slave = mi2s_slave;
 	mi2s_pdata->ext_mclk_rate = mi2s_ext_mclk_rate;

@@ -441,6 +441,7 @@ ep_write (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
 	kbuf = memdup_user(buf, len);
 	if (IS_ERR(kbuf)) {
 		value = PTR_ERR(kbuf);
+		kbuf = NULL;
 		goto free1;
 	}
 
@@ -1018,8 +1019,18 @@ ep0_read (struct file *fd, char __user *buf, size_t len, loff_t *ptr)
 			struct usb_ep		*ep = dev->gadget->ep0;
 			struct usb_request	*req = dev->req;
 
+<<<<<<< HEAD
 			if ((retval = setup_req (ep, req, 0)) == 0)
 				retval = usb_ep_queue (ep, req, GFP_ATOMIC);
+=======
+			if ((retval = setup_req (ep, req, 0)) == 0) {
+				++dev->udc_usage;
+				spin_unlock_irq (&dev->lock);
+				retval = usb_ep_queue (ep, req, GFP_KERNEL);
+				spin_lock_irq (&dev->lock);
+				--dev->udc_usage;
+			}
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			dev->state = STATE_DEV_CONNECTED;
 
 			/* assume that was SET_CONFIGURATION */
@@ -1549,8 +1560,18 @@ delegate:
 							w_length);
 				if (value < 0)
 					break;
+<<<<<<< HEAD
 				value = usb_ep_queue (gadget->ep0, dev->req,
 							GFP_ATOMIC);
+=======
+
+				++dev->udc_usage;
+				spin_unlock (&dev->lock);
+				value = usb_ep_queue (gadget->ep0, dev->req,
+							GFP_KERNEL);
+				spin_lock (&dev->lock);
+				--dev->udc_usage;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 				if (value < 0) {
 					clean_req (gadget->ep0, dev->req);
 					break;
@@ -1573,11 +1594,22 @@ delegate:
 	if (value >= 0 && dev->state != STATE_DEV_SETUP) {
 		req->length = value;
 		req->zero = value < w_length;
+<<<<<<< HEAD
 		value = usb_ep_queue (gadget->ep0, req, GFP_ATOMIC);
+=======
+
+		++dev->udc_usage;
+		spin_unlock (&dev->lock);
+		value = usb_ep_queue (gadget->ep0, req, GFP_KERNEL);
+		spin_lock(&dev->lock);
+		--dev->udc_usage;
+		spin_unlock(&dev->lock);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (value < 0) {
 			DBG (dev, "ep_queue --> %d\n", value);
 			req->status = 0;
 		}
+		return value;
 	}
 
 	/* device stalls when value < 0 */

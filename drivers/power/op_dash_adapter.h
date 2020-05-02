@@ -223,3 +223,7 @@ static unsigned char adapter_stm8s_firmware_data[] = {
 };
 
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0

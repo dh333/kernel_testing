@@ -697,6 +697,8 @@ void f2fs_delete_entry(struct f2fs_dir_entry *dentry, struct page *page,
 	struct	f2fs_dentry_block *dentry_blk;
 	unsigned int bit_pos;
 	int slots = GET_DENTRY_SLOTS(le16_to_cpu(dentry->name_len));
+	struct address_space *mapping = page_mapping(page);
+	unsigned long flags;
 	int i;
 
 	f2fs_update_time(F2FS_I_SB(dir), REQ_TIME);
@@ -728,8 +730,17 @@ void f2fs_delete_entry(struct f2fs_dir_entry *dentry, struct page *page,
 		f2fs_drop_nlink(dir, inode);
 
 	if (bit_pos == NR_DENTRY_IN_BLOCK &&
+<<<<<<< HEAD
 		!f2fs_truncate_hole(dir, page->index, page->index + 1)) {
 		f2fs_clear_radix_tree_dirty_tag(page);
+=======
+			!truncate_hole(dir, page->index, page->index + 1)) {
+		spin_lock_irqsave(&mapping->tree_lock, flags);
+		radix_tree_tag_clear(&mapping->page_tree, page_index(page),
+				     PAGECACHE_TAG_DIRTY);
+		spin_unlock_irqrestore(&mapping->tree_lock, flags);
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		clear_page_dirty_for_io(page);
 		ClearPagePrivate(page);
 		ClearPageUptodate(page);

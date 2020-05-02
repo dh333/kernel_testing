@@ -494,7 +494,11 @@ static inline int write_all_xattrs(struct inode *inode, __u32 hsize,
 	} else {
 		struct dnode_of_data dn;
 		set_new_dnode(&dn, inode, NULL, NULL, new_nid);
+<<<<<<< HEAD
 		xpage = f2fs_new_node_page(&dn, XATTR_NODE_OFFSET);
+=======
+		xpage = new_node_page(&dn, XATTR_NODE_OFFSET);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (IS_ERR(xpage)) {
 			err = PTR_ERR(xpage);
 			f2fs_alloc_nid_failed(sbi, new_nid);

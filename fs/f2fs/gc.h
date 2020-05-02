@@ -36,6 +36,11 @@ struct f2fs_gc_kthread {
 	unsigned int no_gc_sleep_time;
 
 	/* for changing gc mode */
+<<<<<<< HEAD
+=======
+	unsigned int gc_idle;
+	unsigned int gc_urgent;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	unsigned int gc_wake;
 };
 

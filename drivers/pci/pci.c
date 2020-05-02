@@ -593,7 +593,10 @@ static int pci_raw_set_power_state(struct pci_dev *dev, pci_power_t state)
 		break;
 	}
 
+<<<<<<< HEAD
 /*modify by yangrujin@bsp 2016/3/15, reduce pci resume times, adopt QCOM recommendation in case#02382025*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     if ((pci_write_config_word(dev, dev->pm_cap + PCI_PM_CTRL, pmcsr) != PCIBIOS_DEVICE_NOT_FOUND) &&
         ( state == PCI_D3hot || dev->current_state == PCI_D3hot)){ //If config space read fail, bypass the D3 delay.
         pci_dev_d3_sleep(dev);

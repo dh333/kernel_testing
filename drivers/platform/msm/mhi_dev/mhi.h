@@ -272,6 +272,7 @@ struct mhi_config {
 #define MHI_ENV_VALUE			2
 #define MHI_MASK_ROWS_CH_EV_DB		4
 #define TRB_MAX_DATA_SIZE		8192
+<<<<<<< HEAD
 #define MHI_CTRL_STATE			100
 
 /* maximum transfer completion events buffer - set to ring size */
@@ -284,6 +285,9 @@ struct mhi_config {
 #define MHI_MAX_EVT_REQ			MAX_TR_EVENTS
 /* Set flush threshold to 80% of MAX_TR_EVENTS */
 #define MHI_CMPL_EVT_FLUSH_THRSHLD ((MAX_TR_EVENTS * 8) / 10)
+=======
+#define MHI_CTRL_STATE			25
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 /* Possible ring element types */
 union mhi_dev_ring_element_type {
@@ -361,6 +365,7 @@ enum mhi_dev_ch_operation {
 	MHI_DEV_POLL,
 };
 
+<<<<<<< HEAD
 enum mhi_dev_tr_compl_evt_type {
 	SEND_EVENT_BUFFER,
 	SEND_EVENT_RD_OFFSET,
@@ -369,6 +374,13 @@ enum mhi_dev_tr_compl_evt_type {
 enum mhi_dev_transfer_type {
 	MHI_DEV_DMA_SYNC,
 	MHI_DEV_DMA_ASYNC,
+=======
+enum mhi_ctrl_info {
+	MHI_STATE_CONFIGURED = 0,
+	MHI_STATE_CONNECTED = 1,
+	MHI_STATE_DISCONNECTED = 2,
+	MHI_STATE_INVAL,
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 };
 
 struct mhi_dev_channel;
@@ -414,9 +426,15 @@ static inline void mhi_dev_ring_inc_index(struct mhi_dev_ring *ring,
 
 #define MHI_DEV_MMIO_RANGE			0xc80
 
+<<<<<<< HEAD
 struct ring_cache_req {
 	struct completion	*done;
 	void			*context;
+=======
+enum cb_reason {
+	MHI_DEV_TRE_AVAILABLE = 0,
+	MHI_DEV_CTRL_UPDATE,
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 };
 
 struct event_req {
@@ -581,11 +599,14 @@ struct mhi_dev {
 
 	/*Register for interrupt*/
 	bool				mhi_int;
+<<<<<<< HEAD
 	bool				mhi_int_en;
 	/* Registered client callback list */
 	struct list_head		client_cb_list;
 
 	struct kobj_uevent_env		kobj_env;
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 };
 
 
@@ -1097,6 +1118,14 @@ int mhi_dev_net_interface_init(void);
 
 void mhi_dev_notify_a7_event(struct mhi_dev *mhi);
 
+<<<<<<< HEAD
 void uci_ctrl_update(struct mhi_dev_client_cb_reason *reason);
 
 #endif /* _MHI_H */
+=======
+int mhi_ctrl_state_info(uint32_t *info);
+
+void uci_ctrl_update(struct mhi_dev_client_cb_reason *reason);
+
+#endif /* _MHI_H_ */
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0

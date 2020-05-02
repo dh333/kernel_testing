@@ -38,6 +38,7 @@
 #include <sound/soc-dapm.h>
 #include <sound/tlv.h>
 #include <sound/info.h>
+#include <sound/sounddebug.h>
 #include "wcd9335.h"
 #include "wcd-mbhc-v2.h"
 #include "wcd9xxx-common-v2.h"
@@ -851,6 +852,7 @@ static const struct tasha_reg_mask_val tasha_spkr_mode1[] = {
 	{WCD9335_CDC_BOOST1_BOOST_CTL, 0x7C, 0x44},
 };
 
+<<<<<<< HEAD
 static const struct tasha_reg_mask_val tasha_high_impedance[] = {
 	{WCD9335_TLMM_I2S_TX_SD0_PINCFG, 0x1F, 0x0C},
 	{WCD9335_TLMM_I2S_TX_SD1_PINCFG, 0x1F, 0x0C},
@@ -870,6 +872,8 @@ static const struct tasha_reg_mask_val tasha_reset_high_impedance[] = {
 };
 
 /*zhiguang.su@MultiMedia.AudioDrv, 2015-10-26, Modify for headset uevent*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 enum
 {
 	NO_DEVICE	= 0,
@@ -13937,7 +13941,10 @@ static int tasha_codec_probe(struct snd_soc_codec *codec)
 		goto err_hwdep;
 	}
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv, 2015-10-26, Modify for headset uevent*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		tasha->mbhc.wcd9xxx_sdev.name= "h2w";
 		tasha->mbhc.wcd9xxx_sdev.print_name = wcd9xxx_print_name;
 		ret = switch_dev_register(&tasha->mbhc.wcd9xxx_sdev);
@@ -14037,14 +14044,22 @@ static int tasha_codec_probe(struct snd_soc_codec *codec)
 	mutex_unlock(&codec->mutex);
 	snd_soc_dapm_sync(dapm);
 
+<<<<<<< HEAD
 	/*zhiguang.su@MultiMedia.AudioDrv, 2015-10-26, Modify for headset uevent*/
 	priv_headset_type = tasha;
+=======
+
+   priv_headset_type = tasha;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	return ret;
 
 err_pdata:
 	devm_kfree(codec->dev, ptr);
+<<<<<<< HEAD
 	/*zhiguang.su@MultiMedia.AudioDrv, 2015-10-26, Modify for headset uevent*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	switch_dev_unregister(&tasha->mbhc.wcd9xxx_sdev);
 	err_switch_dev_register:
 err_hwdep:

@@ -3383,6 +3383,11 @@ int ufshcd_read_device_desc(struct ufs_hba *hba, u8 *buf, u32 size)
 	return ufshcd_read_desc(hba, QUERY_DESC_IDN_DEVICE, 0, buf, size);
 }
 
+int ufshcd_read_geometry_desc(struct ufs_hba *hba, u8 *buf, u32 size)
+{
+	return ufshcd_read_desc(hba, QUERY_DESC_IDN_GEOMETRY, 0, buf, size);
+}
+
 /**
  * ufshcd_read_string_desc - read string descriptor
  * @hba: pointer to adapter instance
@@ -4749,7 +4754,11 @@ static int ufshcd_slave_alloc(struct scsi_device *sdev)
 	/* REPORT SUPPORTED OPERATION CODES is not supported */
 	sdev->no_report_opcodes = 1;
 
+<<<<<<< HEAD
 	/* WRITE_SAME command is not supported*/
+=======
+	/* WRITE_SAME command is not supported */
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	sdev->no_write_same = 1;
 
 	ufshcd_set_queue_depth(sdev);
@@ -5473,11 +5482,15 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
 	hba = container_of(work, struct ufs_hba, eeh_work);
 
 	pm_runtime_get_sync(hba->dev);
+<<<<<<< HEAD
 
 	ufshcd_scsi_block_requests(hba);
 
 
 
+=======
+	ufshcd_scsi_block_requests(hba);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	err = ufshcd_get_ee_status(hba, &status);
 	if (err) {
 		dev_err(hba->dev, "%s: failed to get exception status %d\n",
@@ -5491,11 +5504,15 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
 		ufshcd_bkops_exception_event_handler(hba);
 
 out:
+<<<<<<< HEAD
 
 	ufshcd_scsi_unblock_requests(hba);
 
 
 
+=======
+	ufshcd_scsi_unblock_requests(hba);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	pm_runtime_put_sync(hba->dev);
 	return;
 }
@@ -6939,6 +6956,8 @@ static int ufshcd_probe_hba(struct ufs_hba *hba)
 			}
 			hba->clk_scaling.is_allowed = true;
 		}
+
+		ufs_fill_info(hba);
 
 		scsi_scan_host(hba->host);
 		pm_runtime_put_sync(hba->dev);

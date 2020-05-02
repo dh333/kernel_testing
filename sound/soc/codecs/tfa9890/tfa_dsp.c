@@ -26,6 +26,10 @@
 #include <linux/pm.h>
 #include <linux/slab.h>
 #include <linux/crc32.h>
+<<<<<<< HEAD
+=======
+#include <sound/sounddebug.h>
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #include "tfa98xx-core.h"
 #include "tfa98xx-regs.h"
 #include "tfa_container.h"
@@ -85,7 +89,10 @@
 #define FW_PARAM_GET_STATE		0x84
 #define FW_PARAM_GET_FEATURE_BITS	0x85
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-08-13, add for mtp recovery*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 int recoverMtp0 = false;
 
 EXPORT_SYMBOL_GPL(recoverMtp0);
@@ -153,7 +160,10 @@ int tfaRunWriteRegister(struct tfa98xx *tfa98xx, struct nxpTfaRegpatch *reg)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*suzhiguang@MultiMedia.AudioDrv, 2015-08-11, repair when MTP 0 fail*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 int tfa98xx_restore_mtp(struct tfa98xx *tfa98xx)
 {
 	struct snd_soc_codec *codec = tfa98xx->codec;
@@ -882,7 +892,10 @@ static int tfa98xx_init(struct tfa98xx *tfa98xx)
 static int tfa98xx_startup(struct tfa98xx *tfa98xx)
 {
 	int tries, status, ret;
+<<<<<<< HEAD
 /*suzhiguang@MultiMedia.AudioDrv, 2015-08-11, Modify for MTP repare*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     struct snd_soc_codec *codec = tfa98xx->codec;
     u16 statusreg = 0;
     u16 mtp0;
@@ -1045,7 +1058,10 @@ int tfa98xx_dsp_power_up(struct tfa98xx *tfa98xx)
 	int ret = 0;
 	int tries, status;
 
+<<<<<<< HEAD
 /*suzhiguang@MultiMedia.AudioDrv, 2015-08-13, Modify for MTP repare*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 u16 mtp0;
 struct snd_soc_codec *codec = tfa98xx->codec;
 
@@ -1061,7 +1077,10 @@ struct snd_soc_codec *codec = tfa98xx->codec;
 			break;
 	}
 
+<<<<<<< HEAD
 /*suzhiguang@MultiMedia.AudioDrv, 2015-08-13, Modify for MTP repare*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     if (tries == 0) {
 		pr_err("tfa98xx_dsp_system_stable Time out\n");
         /*
@@ -2297,7 +2316,10 @@ int tfaRunSpeakerQuickBoost(struct tfa98xx *tfa98xx, int force)
 	int ret = 0;
 
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-18,avoid pop */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		tfa98xx_set_mute(tfa98xx, Tfa98xx_Mute_Digital);
 
 	pr_debug("force: %d\n", force);
@@ -2398,8 +2420,11 @@ int tfaRunSpeakerQuickBoost(struct tfa98xx *tfa98xx, int force)
 		ret = tfa98xx_dsp_power_up(tfa98xx);
 	}
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-18,avoid pop */
 //	tfa98xx_unmute(tfa98xx);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	return ret;
 }
@@ -2471,7 +2496,10 @@ int tfa98xx_dsp_quickstart(struct tfa98xx *tfa98xx, int next_profile, int vstep)
 	}
 
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-18,avoid pop */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     msleep_interruptible(10);
 	tfa98xx_unmute(tfa98xx);
 

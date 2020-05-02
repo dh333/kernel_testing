@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2008-2018, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2008-2017, The Linux Foundation. All rights reserved.
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -369,6 +373,7 @@ struct msm_fb_data_type {
 	bool pending_switch;
 	struct mutex switch_lock;
 	struct input_handler *input_handler;
+	int first_frame;
 };
 
 static inline void mdss_fb_update_notify_update(struct msm_fb_data_type *mfd)

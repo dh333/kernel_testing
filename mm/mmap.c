@@ -1335,6 +1335,9 @@ unsigned long do_mmap_pgoff(struct file *file, unsigned long addr,
 
 	*populate = 0;
 
+	while (file && (file->f_mode & FMODE_NONMAPPABLE))
+		file = file->f_op->get_lower_file(file);
+
 #ifdef CONFIG_MSM_APP_SETTINGS
 	if (use_app_setting)
 		apply_app_setting_bit(file);
@@ -2319,12 +2322,11 @@ int expand_downwards(struct vm_area_struct *vma,
 {
 	struct vm_area_struct *prev;
 	unsigned long gap_addr;
-	int error;
+	int error = 0;
 
 	address &= PAGE_MASK;
-	error = security_mmap_addr(address);
-	if (error)
-		return error;
+	if (address < mmap_min_addr)
+		return -EPERM;
 
 	/* Enforce stack_guard_gap */
 	gap_addr = address - stack_guard_gap;

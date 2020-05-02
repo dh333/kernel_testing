@@ -1065,11 +1065,19 @@ int hrtimer_try_to_cancel(struct hrtimer *timer)
 	int ret = -1;
 
 	/*
+<<<<<<< HEAD
 	 * Check lockless first. If the timer is not active (neither
 	 * enqueued nor running the callback, nothing to do here.  The
 	 * base lock does not serialize against a concurrent enqueue,
 	 * so we can avoid taking it.
 	 */
+=======
+	* Check lockless first. If the timer is not active (neither
+	* enqueued nor running the callback, nothing to do here.  The
+	* base lock does not serialize against a concurrent enqueue,
+	* so we can avoid taking it.
+	*/
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	if (!hrtimer_active(timer))
 		return 0;
 

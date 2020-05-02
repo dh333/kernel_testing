@@ -61,6 +61,9 @@ static int gc_thread_func(void *data)
 		if (!sb_start_write_trylock(sbi->sb))
 			continue;
 
+		if (!sb_start_write_trylock(sbi->sb))
+			continue;
+
 		/*
 		 * [GC triggering condition]
 		 * 0. GC is not conducted currently.
@@ -82,6 +85,14 @@ static int gc_thread_func(void *data)
 
 		if (!mutex_trylock(&sbi->gc_mutex))
 			goto next;
+<<<<<<< HEAD
+=======
+
+		if (gc_th->gc_urgent) {
+			wait_ms = gc_th->urgent_sleep_time;
+			goto do_gc;
+		}
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 		if (!is_idle(sbi)) {
 			increase_sleep_time(gc_th, &wait_ms);
@@ -129,6 +140,11 @@ int f2fs_start_gc_thread(struct f2fs_sb_info *sbi)
 	gc_th->max_sleep_time = DEF_GC_THREAD_MAX_SLEEP_TIME;
 	gc_th->no_gc_sleep_time = DEF_GC_THREAD_NOGC_SLEEP_TIME;
 
+<<<<<<< HEAD
+=======
+	gc_th->gc_idle = 0;
+	gc_th->gc_urgent = 0;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	gc_th->gc_wake= 0;
 
 	sbi->gc_thread = gc_th;
@@ -266,6 +282,19 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
 	return UINT_MAX - ((100 * (100 - u) * age) / (100 + u));
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int get_greedy_cost(struct f2fs_sb_info *sbi,
+						unsigned int segno)
+{
+	unsigned int valid_blocks =
+			get_valid_blocks(sbi, segno, true);
+
+	return IS_DATASEG(get_seg_entry(sbi, segno)->type) ?
+				valid_blocks * 2 : valid_blocks;
+}
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static inline unsigned int get_gc_cost(struct f2fs_sb_info *sbi,
 			unsigned int segno, struct victim_sel_policy *p)
 {
@@ -599,6 +628,7 @@ static bool is_alive(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
 	return true;
 }
 
+<<<<<<< HEAD
 static int ra_data_block(struct inode *inode, pgoff_t index)
 {
 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
@@ -665,12 +695,18 @@ put_page:
 	return err;
 }
 
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 /*
  * Move data block via META_MAPPING while keeping locked data page.
  * This can be used to move blocks, aka LBAs, directly on disk.
  */
 static void move_data_block(struct inode *inode, block_t bidx,
+<<<<<<< HEAD
 				int gc_type, unsigned int segno, int off)
+=======
+					unsigned int segno, int off)
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 {
 	struct f2fs_io_info fio = {
 		.sbi = F2FS_I_SB(inode),
@@ -803,6 +839,8 @@ write_page:
 			end_page_writeback(fio.encrypted_page);
 		goto put_page_out;
 	}
+
+	f2fs_update_iostat(fio.sbi, FS_GC_DATA_IO, F2FS_BLKSIZE);
 
 	f2fs_update_iostat(fio.sbi, FS_GC_DATA_IO, F2FS_BLKSIZE);
 
@@ -957,6 +995,7 @@ next_step:
 			if (IS_ERR(inode) || is_bad_inode(inode))
 				continue;
 
+<<<<<<< HEAD
 			if (!down_write_trylock(
 				&F2FS_I(inode)->i_gc_rwsem[WRITE])) {
 				iput(inode);
@@ -975,6 +1014,10 @@ next_step:
 					iput(inode);
 					continue;
 				}
+=======
+			/* if encrypted inode, let's go phase 3 */
+			if (f2fs_encrypted_file(inode)) {
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 				add_gc_inode(gc_list, inode);
 				continue;
 			}
@@ -1015,9 +1058,14 @@ next_step:
 
 			start_bidx = f2fs_start_bidx_of_node(nofs, inode)
 								+ ofs_in_node;
+<<<<<<< HEAD
 			if (f2fs_post_read_required(inode))
 				move_data_block(inode, start_bidx, gc_type,
 								segno, off);
+=======
+			if (f2fs_encrypted_file(inode))
+				move_data_block(inode, start_bidx, segno, off);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			else
 				move_data_page(inode, start_bidx, gc_type,
 								segno, off);
@@ -1153,6 +1201,15 @@ int f2fs_gc(struct f2fs_sb_info *sbi, bool sync,
 				reserved_segments(sbi),
 				prefree_segments(sbi));
 
+	trace_f2fs_gc_begin(sbi->sb, sync, background,
+				get_pages(sbi, F2FS_DIRTY_NODES),
+				get_pages(sbi, F2FS_DIRTY_DENTS),
+				get_pages(sbi, F2FS_DIRTY_IMETA),
+				free_sections(sbi),
+				free_segments(sbi),
+				reserved_segments(sbi),
+				prefree_segments(sbi));
+
 	cpc.reason = __get_cp_reason(sbi);
 	sbi->skipped_gc_rwsem = 0;
 	first_skipped = last_skipped;
@@ -1195,6 +1252,7 @@ gc_more:
 	if (gc_type == FG_GC && seg_freed == sbi->segs_per_sec)
 		sec_freed++;
 	total_freed += seg_freed;
+<<<<<<< HEAD
 
 	if (gc_type == FG_GC) {
 		if (sbi->skipped_atomic_files[FG_GC] > last_skipped ||
@@ -1203,6 +1261,8 @@ gc_more:
 		last_skipped = sbi->skipped_atomic_files[FG_GC];
 		round++;
 	}
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	if (gc_type == FG_GC)
 		sbi->cur_victim_sec = NULL_SEGNO;

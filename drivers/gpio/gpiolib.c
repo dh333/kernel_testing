@@ -1147,7 +1147,11 @@ static bool _gpiod_get_raw_value(const struct gpio_desc *desc)
 			value = chip->get ? chip->get(chip, offset) : 0;
 		}
 	} else {
+<<<<<<< HEAD
 		value = chip->get ? chip->get(chip, offset) : 0;
+=======
+		value = chip->get ? chip->get(chip, offset) : -EIO;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		trace_gpio_value(desc_to_gpio(desc), 1, value);
 	}
 	return value;

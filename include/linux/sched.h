@@ -1329,6 +1329,10 @@ struct task_struct {
 	atomic_t usage;
 	unsigned int flags;	/* per process flags, defined below */
 	unsigned int ptrace;
+	unsigned int kill_flag;
+	struct timespec ttu;
+
+    bool dump_fd_leak;
 
 #ifdef CONFIG_SMP
 	struct llist_node wake_entry;
@@ -1793,8 +1797,16 @@ struct task_struct {
 	unsigned int	sequential_io;
 	unsigned int	sequential_io_avg;
 #endif
+<<<<<<< HEAD
 	atomic64_t *concurrent_active_time;
 	atomic64_t *concurrent_policy_time;
+=======
+	u64 utask_tag;
+	u64 utask_tag_base;
+	int etask_claim;
+	int claim_cpu;
+	bool utask_slave;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 };
 
 /* Future-safe accessor for struct task_struct's cpus_allowed. */
@@ -2156,6 +2168,7 @@ static inline void memalloc_noio_restore(unsigned int flags)
 #define PFA_NO_NEW_PRIVS 0	/* May not gain new privileges. */
 #define PFA_SPREAD_PAGE  1      /* Spread page cache over cpuset */
 #define PFA_SPREAD_SLAB  2      /* Spread some slab caches over cpuset */
+#define PFA_LMK_WAITING  3      /* Lowmemorykiller is waiting */
 
 
 #define TASK_PFA_TEST(name, func)					\
@@ -2178,6 +2191,9 @@ TASK_PFA_CLEAR(SPREAD_PAGE, spread_page)
 TASK_PFA_TEST(SPREAD_SLAB, spread_slab)
 TASK_PFA_SET(SPREAD_SLAB, spread_slab)
 TASK_PFA_CLEAR(SPREAD_SLAB, spread_slab)
+
+TASK_PFA_TEST(LMK_WAITING, lmk_waiting)
+TASK_PFA_SET(LMK_WAITING, lmk_waiting)
 
 /*
  * task->jobctl flags
@@ -2701,7 +2717,12 @@ static inline void set_task_comm(struct task_struct *tsk, const char *from)
 {
 	__set_task_comm(tsk, from, false);
 }
-extern char *get_task_comm(char *to, struct task_struct *tsk);
+
+extern char *__get_task_comm(char *to, size_t len, struct task_struct *tsk);
+#define get_task_comm(buf, tsk) ({			\
+	BUILD_BUG_ON(sizeof(buf) != TASK_COMM_LEN);	\
+	__get_task_comm(buf, sizeof(buf), tsk);		\
+})
 
 #ifdef CONFIG_SMP
 void scheduler_ipi(void);
@@ -3233,6 +3254,7 @@ static inline void inc_syscw(struct task_struct *tsk)
 {
 	tsk->ioac.syscw++;
 }
+
 static inline void inc_syscfs(struct task_struct *tsk)
 {
 	tsk->ioac.syscfs++;

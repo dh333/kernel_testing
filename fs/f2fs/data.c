@@ -27,7 +27,6 @@
 #include "segment.h"
 #include "trace.h"
 #include <trace/events/f2fs.h>
-#include <trace/events/android_fs.h>
 
 #define NUM_PREALLOC_POST_READ_CTXS	128
 
@@ -590,6 +589,53 @@ static int f2fs_submit_page_read(struct inode *inode, struct page *page,
 	return 0;
 }
 
+static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
+							 unsigned nr_pages)
+{
+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+	struct fscrypt_ctx *ctx = NULL;
+	struct bio *bio;
+
+	if (f2fs_encrypted_file(inode)) {
+		ctx = fscrypt_get_ctx(inode, GFP_NOFS);
+		if (IS_ERR(ctx))
+			return ERR_CAST(ctx);
+
+		/* wait the page to be moved by cleaning */
+		f2fs_wait_on_block_writeback(sbi, blkaddr);
+	}
+
+	bio = bio_alloc(GFP_KERNEL, min_t(int, nr_pages, BIO_MAX_PAGES));
+	if (!bio) {
+		if (ctx)
+			fscrypt_release_ctx(ctx);
+		return ERR_PTR(-ENOMEM);
+	}
+	f2fs_target_device(sbi, blkaddr, bio);
+	bio->bi_end_io = f2fs_read_end_io;
+	bio->bi_private = ctx;
+	bio_set_op_attrs(bio, REQ_OP_READ, 0);
+
+	return bio;
+}
+
+/* This can handle encryption stuffs */
+static int f2fs_submit_page_read(struct inode *inode, struct page *page,
+							block_t blkaddr)
+{
+	struct bio *bio = f2fs_grab_read_bio(inode, blkaddr, 1);
+
+	if (IS_ERR(bio))
+		return PTR_ERR(bio);
+
+	if (bio_add_page(bio, page, PAGE_SIZE, 0) < PAGE_SIZE) {
+		bio_put(bio);
+		return -EFAULT;
+	}
+	__submit_bio(F2FS_I_SB(inode), bio, DATA);
+	return 0;
+}
+
 static void __set_data_blkaddr(struct dnode_of_data *dn)
 {
 	struct f2fs_node *rn = F2FS_NODE(dn->node_page);
@@ -883,10 +929,13 @@ static int __allocate_data_block(struct dnode_of_data *dn, int seg_type)
 	if (unlikely(is_inode_flag_set(dn->inode, FI_NO_ALLOC)))
 		return -EPERM;
 
+<<<<<<< HEAD
 	err = f2fs_get_node_info(sbi, dn->nid, &ni);
 	if (err)
 		return err;
 
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	dn->data_blkaddr = datablock_addr(dn->inode,
 				dn->node_page, dn->ofs_in_node);
 	if (dn->data_blkaddr == NEW_ADDR)
@@ -914,6 +963,16 @@ alloc:
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool __force_buffered_io(struct inode *inode, int rw)
+{
+	return (f2fs_encrypted_file(inode) ||
+			(rw == WRITE && test_opt(F2FS_I_SB(inode), LFS)) ||
+			F2FS_I_SB(inode)->s_ndevs);
+}
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 int f2fs_preallocate_blocks(struct inode *inode, loff_t pos,
 				size_t count, bool direct_io)
 {
@@ -955,6 +1014,7 @@ int f2fs_preallocate_blocks(struct inode *inode, loff_t pos,
 		if (err)
 			return err;
 	}
+<<<<<<< HEAD
 	if (f2fs_has_inline_data(inode))
 		return err;
 
@@ -966,6 +1026,12 @@ map_blocks:
 		if (!direct_io)
 			set_inode_flag(inode, FI_NO_PREALLOC);
 		err = 0;
+=======
+	if (pos + count > MAX_INLINE_DATA(inode)) {
+		err = f2fs_convert_inline_inode(inode);
+		if (err)
+			return err;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 	return err;
 }
@@ -1230,10 +1296,14 @@ static int get_data_block_dio(struct inode *inode, sector_t iblock,
 			struct buffer_head *bh_result, int create)
 {
 	return __get_data_block(inode, iblock, bh_result, create,
+<<<<<<< HEAD
 						F2FS_GET_BLOCK_DEFAULT, NULL,
 						f2fs_rw_hint_to_seg_type(
 							WRITE_LIFE_NOT_SET));
 						/* inode->i_write_hint)); */
+=======
+						F2FS_GET_BLOCK_DEFAULT, NULL);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 }
 
 static int get_data_block_bmap(struct inode *inode, sector_t iblock,
@@ -1525,8 +1595,12 @@ submit_and_realloc:
 			bio = NULL;
 		}
 		if (bio == NULL) {
+<<<<<<< HEAD
 			bio = f2fs_grab_read_bio(inode, block_nr, nr_pages,
 					is_readahead ? REQ_RAHEAD : 0);
+=======
+			bio = f2fs_grab_read_bio(inode, block_nr, nr_pages);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			if (IS_ERR(bio)) {
 				bio = NULL;
 				goto set_error_page;
@@ -1599,7 +1673,11 @@ static int encrypt_one_page(struct f2fs_io_info *fio)
 	if (!f2fs_encrypted_file(inode))
 		return 0;
 
+<<<<<<< HEAD
 	/* wait for GCed page writeback via META_MAPPING */
+=======
+	/* wait for GCed encrypted page writeback */
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	f2fs_wait_on_block_writeback(fio->sbi, fio->old_blkaddr);
 
 retry_encrypt:
@@ -1828,7 +1906,10 @@ static int __write_data_page(struct page *page, bool *submitted,
 		.submitted = false,
 		.need_lock = LOCK_RETRY,
 		.io_type = io_type,
+<<<<<<< HEAD
 		.io_wbc = wbc,
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	};
 
 	trace_f2fs_writepage(page, DATA);
@@ -2110,6 +2191,7 @@ continue_unlock:
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline bool __should_serialize_io(struct inode *inode,
 					struct writeback_control *wbc)
 {
@@ -2123,6 +2205,9 @@ static inline bool __should_serialize_io(struct inode *inode,
 }
 
 static int __f2fs_write_data_pages(struct address_space *mapping,
+=======
+int __f2fs_write_data_pages(struct address_space *mapping,
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 						struct writeback_control *wbc,
 						enum iostat_type io_type)
 {
@@ -2253,7 +2338,11 @@ restart:
 
 	if (f2fs_has_inline_data(inode)) {
 		if (pos + len <= MAX_INLINE_DATA(inode)) {
+<<<<<<< HEAD
 			f2fs_do_read_inline_data(page, ipage);
+=======
+			read_inline_data(page, ipage);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			set_inode_flag(inode, FI_DATA_EXIST);
 			if (inode->i_nlink)
 				set_inline_node(ipage);
@@ -2305,16 +2394,6 @@ static int f2fs_write_begin(struct file *file, struct address_space *mapping,
 	block_t blkaddr = NULL_ADDR;
 	int err = 0;
 
-	if (trace_android_fs_datawrite_start_enabled()) {
-		char *path, pathbuf[MAX_TRACE_PATHBUF_LEN];
-
-		path = android_fstrace_get_pathname(pathbuf,
-						    MAX_TRACE_PATHBUF_LEN,
-						    inode);
-		trace_android_fs_datawrite_start(inode, pos, len,
-						 current->pid, path,
-						 current->comm);
-	}
 	trace_f2fs_write_begin(inode, pos, len, flags);
 
 	if ((f2fs_is_atomic_file(inode) &&
@@ -2367,8 +2446,13 @@ repeat:
 
 	f2fs_wait_on_page_writeback(page, DATA, false);
 
+<<<<<<< HEAD
 	/* wait for GCed page writeback via META_MAPPING */
 	if (f2fs_post_read_required(inode))
+=======
+	/* wait for GCed encrypted page writeback */
+	if (f2fs_encrypted_file(inode))
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		f2fs_wait_on_block_writeback(sbi, blkaddr);
 
 	if (len == PAGE_SIZE || PageUptodate(page))
@@ -2414,7 +2498,6 @@ static int f2fs_write_end(struct file *file,
 {
 	struct inode *inode = page->mapping->host;
 
-	trace_android_fs_datawrite_end(inode, pos, len);
 	trace_f2fs_write_end(inode, pos, len, copied);
 
 	/*
@@ -2479,27 +2562,6 @@ static ssize_t f2fs_direct_IO(int rw, struct kiocb *iocb, struct iov_iter *iter,
 	if (f2fs_force_buffered_io(inode, rw))
 		return 0;
 
-	if (trace_android_fs_dataread_start_enabled() && (rw == READ)) {
-		char *path, pathbuf[MAX_TRACE_PATHBUF_LEN];
-
-		path = android_fstrace_get_pathname(pathbuf,
-						    MAX_TRACE_PATHBUF_LEN,
-						    inode);
-		trace_android_fs_dataread_start(inode, offset,
-						count, current->pid, path,
-						current->comm);
-	}
-	if (trace_android_fs_datawrite_start_enabled() && (rw == WRITE)) {
-		char *path, pathbuf[MAX_TRACE_PATHBUF_LEN];
-
-		path = android_fstrace_get_pathname(pathbuf,
-						    MAX_TRACE_PATHBUF_LEN,
-						    inode);
-		trace_android_fs_datawrite_start(inode, offset, count,
-						 current->pid, path,
-						 current->comm);
-	}
-
 	trace_f2fs_direct_IO_enter(inode, offset, count, rw);
 
 	/* if (rw == WRITE && whint_mode == WHINT_MODE_OFF)
@@ -2510,8 +2572,11 @@ static ssize_t f2fs_direct_IO(int rw, struct kiocb *iocb, struct iov_iter *iter,
 	up_read(&F2FS_I(inode)->i_gc_rwsem[rw]);
 
 	if (rw & WRITE) {
+<<<<<<< HEAD
 		/* if (whint_mode == WHINT_MODE_OFF)
 			iocb->ki_hint = hint; */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (err > 0) {
 			f2fs_update_iostat(F2FS_I_SB(inode), APP_DIRECT_IO,
 									err);
@@ -2522,11 +2587,6 @@ static ssize_t f2fs_direct_IO(int rw, struct kiocb *iocb, struct iov_iter *iter,
 	}
 
 	trace_f2fs_direct_IO_exit(inode, offset, count, rw, err);
-
-	if (trace_android_fs_dataread_start_enabled() && (rw == READ))
-		trace_android_fs_dataread_end(inode, offset, count);
-	if (trace_android_fs_datawrite_start_enabled() && (rw == WRITE))
-		trace_android_fs_datawrite_end(inode, offset, count);
 
 	return err;
 }

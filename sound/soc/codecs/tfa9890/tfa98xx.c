@@ -35,11 +35,18 @@
 #include <sound/initval.h>
 #include <sound/tlv.h>
 #include <linux/version.h>
+<<<<<<< HEAD
+=======
+#include <sound/sounddebug.h>
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #include "tfa98xx-core.h"
 #include "tfa98xx-regs.h"
 #include "tfa_container.h"
 #include "tfa_dsp.h"
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv, 2015-11-09, add for debug*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 int testLogOn = 0;
 EXPORT_SYMBOL_GPL(testLogOn);
 
@@ -48,7 +55,10 @@ void tfa98xx_play_stop(void);
 EXPORT_SYMBOL_GPL(tfa98xx_play_stop);
 
 
+<<<<<<< HEAD
 /*suzhiguang@MultiMedia.AudioDrv, 2015-08-11, repair when MTP 0 fail*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 extern int recoverMtp0;
 
 #define I2C_RETRY_DELAY		5 /* ms */
@@ -72,7 +82,10 @@ struct device_node *tfa_codec_np = NULL;
 EXPORT_SYMBOL_GPL(tfa_codec_np);
 
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-05-29, add for smart pa calibtation*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static ssize_t tfa98xx_state_store(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
 {
@@ -103,7 +116,10 @@ static ssize_t tfa98xx_state_show(struct device *dev, struct device_attribute *a
 
     mutex_lock(&tfa98xx->dsp_init_lock);
 
+<<<<<<< HEAD
 /*suzhiguang@MultiMedia.AudioDrv, 2015-08-11, Modify for MTP recovery*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
         /*
 	     * check the contents of  MTP register for non-zero,
 	     * this indicates that the subsys is ready
@@ -158,7 +174,10 @@ static ssize_t tfa98xx_state_show(struct device *dev, struct device_attribute *a
 	if (!tfa98xx_dsp_start(tfa98xx, tfa98xx->profile_ctl, tfa98xx->vstep_ctl))
 		tfa98xx->dsp_init = TFA98XX_DSP_INIT_DONE;
 
+<<<<<<< HEAD
 /*suzhiguang@MultiMedia.AudioDrv, 2015-08-11, Modify for MTP recovery*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
         /*
 	     * check the contents of  MTP register for non-zero,
 	     * this indicates that the subsys is ready
@@ -516,10 +535,15 @@ int tfa98xx_get_profile_ctl(struct snd_kcontrol *kcontrol,
 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
 	struct tfa98xx *tfa98xx = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
 	mutex_lock(&tfa98xx->dsp_init_lock);
 	ucontrol->value.integer.value[0] = tfa98xx->profile_ctl;
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+	mutex_lock(&tfa98xx->dsp_init_lock);
+	ucontrol->value.integer.value[0] = tfa98xx->profile_ctl;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&tfa98xx->dsp_init_lock);
 	return 0;
 }
@@ -539,12 +563,18 @@ int tfa98xx_set_profile_ctl(struct snd_kcontrol *kcontrol,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_lock(&tfa98xx->dsp_init_lock);
 
 	if (tfa98xx->profile_ctl == ucontrol->value.integer.value[0])
 {
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&tfa98xx->dsp_init_lock);
 		return 0;
 }
@@ -578,7 +608,10 @@ int tfa98xx_set_profile_ctl(struct snd_kcontrol *kcontrol,
 	prof_old->vstep = tfa98xx->vstep_ctl;
 	tfa98xx->vstep_ctl = prof_new->vstep;
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&tfa98xx->dsp_init_lock);
 	return 0;
 }
@@ -612,11 +645,17 @@ int tfa98xx_get_vol_ctl(struct snd_kcontrol *kcontrol,
 		pr_err("No profiles\n");
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
 	mutex_lock(&tfa98xx->dsp_init_lock);
 	ucontrol->value.integer.value[0] = prof->vsteps - prof->vstep - 1;
 
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+	mutex_lock(&tfa98xx->dsp_init_lock);
+	ucontrol->value.integer.value[0] = prof->vsteps - prof->vstep - 1;
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&tfa98xx->dsp_init_lock);
 	return 0;
 }
@@ -636,12 +675,18 @@ int tfa98xx_set_vol_ctl(struct snd_kcontrol *kcontrol,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_lock(&tfa98xx->dsp_init_lock);
 
 	if (prof->vstep == prof->vsteps - ucontrol->value.integer.value[0] - 1)
 {
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&tfa98xx->dsp_init_lock);
 		return 0;
 		}
@@ -657,7 +702,10 @@ int tfa98xx_set_vol_ctl(struct snd_kcontrol *kcontrol,
 
 	tfa98xx->vstep_ctl = prof->vstep;
 
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&tfa98xx->dsp_init_lock);
 	return 1;
 }
@@ -675,14 +723,20 @@ int tfa98xx_info_vol_ctl(struct snd_kcontrol *kcontrol,
 		pr_err("No profiles\n");
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_lock(&tfa98xx->dsp_init_lock);
 
 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
 	uinfo->count = 1;
 	uinfo->value.integer.min = 0;
 	uinfo->value.integer.max = prof->vsteps - 1;
+<<<<<<< HEAD
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-07-06,add lock */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&tfa98xx->dsp_init_lock);
 	return 0;
 }
@@ -870,9 +924,13 @@ pr_err("%s snd_soc_dapm_new_controls\n",__func__);
 				   ARRAY_SIZE(tfa98xx_controls));
 
 	dev_info(codec->dev, "tfa98xx codec registered");
+<<<<<<< HEAD
 	//zhiguang.su add
 	g_tfa98xx = tfa98xx;
 	//zhiguang.su add end
+=======
+	g_tfa98xx = tfa98xx;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	return 0;
 }
 
@@ -945,7 +1003,10 @@ static int tfa98xx_i2c_probe(struct i2c_client *i2c,
 		goto wq_fail;
 	}
 
+<<<<<<< HEAD
 	//zhiguang.su add 1218
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	tfa98xx->rst_gpio = of_get_named_gpio(np, "reset_gpio",0);
 	ret = gpio_request(tfa98xx->rst_gpio, "tfa reset gpio");
 	if (ret < 0)
@@ -954,10 +1015,15 @@ static int tfa98xx_i2c_probe(struct i2c_client *i2c,
 		goto gpio_fail;
 	}
 	gpio_direction_output(tfa98xx->rst_gpio, 1);
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv on 2015-05-18,optimize for speed */
 	udelay(100);
 	gpio_direction_output(tfa98xx->rst_gpio, 0);
 	//zhiguang.su add end 1218
+=======
+	udelay(100);
+	gpio_direction_output(tfa98xx->rst_gpio, 0);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	INIT_WORK(&tfa98xx->init_work, tfa98xx_dsp_init);
 	INIT_WORK(&tfa98xx->stop_work, tfa98xx_stop);
@@ -971,11 +1037,17 @@ static int tfa98xx_i2c_probe(struct i2c_client *i2c,
 		goto codec_fail;
 	}
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv on 2015-05-18,optimize for speed */
 	pr_debug("tfa98xx probed successfully!");
 
 
 /* zhiguang.su@MultiMedia.AudioDrv on 2015-05-29, add for smart pa calibtation*/
+=======
+	pr_debug("tfa98xx probed successfully!");
+
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	error = sysfs_create_file(&i2c->dev.kobj, &tfa98xx_state_attr.attr);
     if(error < 0)
     {

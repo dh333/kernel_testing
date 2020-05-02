@@ -1711,7 +1711,12 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 	MT_DEBUG("qtaguid[%d]: sk=%p got_sock=%d fam=%d proto=%d\n",
 		 par->hooknum, sk, got_sock, par->family, ipx_proto(skb, par));
 
+<<<<<<< HEAD
 	if (!sk) {
+=======
+
+	if (sk == NULL) {
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		/*
 		 * Here, the qtaguid_find_sk() using connection tracking
 		 * couldn't find the owner, so for now we just count them
@@ -1728,6 +1733,13 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		goto put_sock_ret_res;
 	}
 	sock_uid = sk->sk_uid;
+<<<<<<< HEAD
+=======
+	/*
+	 * TODO: unhack how to force just accounting.
+	 * For now we only do iface stats when the uid-owner is not requested
+	 */
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	if (do_tag_stat)
 		account_for_uid(skb, sk, from_kuid(&init_user_ns, sock_uid),
 				par);
@@ -1742,8 +1754,13 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		kuid_t uid_min = make_kuid(&init_user_ns, info->uid_min);
 		kuid_t uid_max = make_kuid(&init_user_ns, info->uid_max);
 
+<<<<<<< HEAD
 		if ((uid_gte(sock_uid, uid_min) &&
 		     uid_lte(sock_uid, uid_max)) ^
+=======
+		if ((uid_gte(sk->sk_uid, uid_min) &&
+		     uid_lte(sk->sk_uid, uid_max)) ^
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		    !(info->invert & XT_QTAGUID_UID)) {
 			MT_DEBUG("qtaguid[%d]: leaving uid not matching\n",
 				 par->hooknum);
@@ -1756,6 +1773,7 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		kgid_t gid_max = make_kgid(&init_user_ns, info->gid_max);
 		set_sk_callback_lock = true;
 		read_lock_bh(&sk->sk_callback_lock);
+<<<<<<< HEAD
 		MT_DEBUG("qtaguid[%d]: sk=%p->sk_socket=%p->file=%p\n",
 			 par->hooknum, sk, sk->sk_socket,
 			 sk->sk_socket ? sk->sk_socket->file : (void *)-1LL);
@@ -1763,12 +1781,24 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		if (!filp) {
 			res = ((info->match ^ info->invert) &
 			       XT_QTAGUID_GID) == 0;
+=======
+		MT_DEBUG("qtaguid[%d]: sk=%pK->sk_socket=%pK->file=%pK\n",
+			par->hooknum, sk, sk->sk_socket,
+			sk->sk_socket ? sk->sk_socket->file : (void *)-1LL);
+		filp = sk->sk_socket ? sk->sk_socket->file : NULL;
+		if (!filp) {
+			res = ((info->match ^ info->invert) & XT_QTAGUID_GID) == 0;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			atomic64_inc(&qtu_events.match_no_sk_gid);
 			goto put_sock_ret_res;
 		}
 		MT_DEBUG("qtaguid[%d]: filp...uid=%u\n",
+<<<<<<< HEAD
 			 par->hooknum, filp ?
 			 from_kuid(&init_user_ns, filp->f_cred->fsuid) : -1);
+=======
+			par->hooknum, filp ? from_kuid(&init_user_ns, filp->f_cred->fsuid) : -1);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if ((gid_gte(filp->f_cred->fsgid, gid_min) &&
 				gid_lte(filp->f_cred->fsgid, gid_max)) ^
 			!(info->invert & XT_QTAGUID_GID)) {

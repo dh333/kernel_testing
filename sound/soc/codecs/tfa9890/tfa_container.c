@@ -25,6 +25,10 @@
 #include <linux/pm.h>
 #include <linux/slab.h>
 #include <linux/crc32.h>
+<<<<<<< HEAD
+=======
+#include <sound/sounddebug.h>
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #include "tfa98xx-core.h"
 #include "tfa98xx-regs.h"
 #include "tfa_container.h"

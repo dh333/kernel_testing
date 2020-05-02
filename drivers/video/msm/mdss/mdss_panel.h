@@ -19,7 +19,7 @@
 #include <linux/stringify.h>
 #include <linux/types.h>
 #include <linux/debugfs.h>
-
+#include "mdss_oem_config.h"
 #define KHZ_TO_HZ 1000
 
 /* panel id type */
@@ -119,6 +119,7 @@ enum {
 };
 
 enum {
+<<<<<<< HEAD
 	MDSS_PANEL_BLANK_BLANK = 0,
 	MDSS_PANEL_BLANK_UNBLANK,
 	MDSS_PANEL_BLANK_LOW_POWER,
@@ -126,6 +127,8 @@ enum {
 
 
 enum {
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	MDSS_PANEL_LOW_PERSIST_MODE_OFF = 0,
 	MDSS_PANEL_LOW_PERSIST_MODE_ON,
 };
@@ -280,7 +283,24 @@ enum mdss_intf_events {
 	MDSS_EVENT_PANEL_TIMING_SWITCH,
 	MDSS_EVENT_UPDATE_PARAMS,
 	MDSS_EVENT_MAX,
+<<<<<<< HEAD
 	MDSS_EVENT_UPDATE_LIVEDISPLAY,
+=======
+	MDSS_EVENT_PANEL_SET_ACL,
+	MDSS_EVENT_PANEL_GET_ACL,
+	MDSS_EVENT_PANEL_SET_MAX_BRIGHTNESS,
+	MDSS_EVENT_PANEL_GET_MAX_BRIGHTNESS,
+	MDSS_EVENT_PANEL_SET_SRGB_MODE,
+	MDSS_EVENT_PANEL_GET_SRGB_MODE,
+	MDSS_EVENT_PANEL_SET_ADOBE_RGB_MODE,
+	MDSS_EVENT_PANEL_GET_ADOBE_RGB_MODE,
+	MDSS_EVENT_PANEL_SET_DCI_P3_MODE,
+	MDSS_EVENT_PANEL_GET_DCI_P3_MODE,
+	MDSS_EVENT_PANEL_SET_NIGHT_MODE,
+	MDSS_EVENT_PANEL_GET_NIGHT_MODE,
+	MDSS_EVENT_PANEL_SET_ONEPLUS_MODE,
+	MDSS_EVENT_PANEL_GET_ONEPLUS_MODE,
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 };
 
 struct lcd_panel_info {
@@ -839,7 +859,10 @@ struct mdss_panel_data {
 	struct mdss_panel_data *next;
 
 	int panel_te_gpio;
+<<<<<<< HEAD
 	int panel_en_gpio;
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	struct completion te_done;
 };
 

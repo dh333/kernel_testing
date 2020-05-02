@@ -376,6 +376,12 @@ static struct task_struct *dup_task_struct(struct task_struct *orig)
 	tsk->splice_pipe = NULL;
 	tsk->task_frag.page = NULL;
 
+    tsk->utask_tag = 0;
+    tsk->utask_tag_base = 0;
+    tsk->etask_claim = 0;
+    tsk->claim_cpu = -1;
+    tsk->utask_slave = 0;
+
 	account_kernel_stack(ti, 1);
 
 	return tsk;
@@ -1370,8 +1376,6 @@ static struct task_struct *copy_process(unsigned long clone_flags,
 
 	posix_cpu_timers_init(p);
 
-	p->start_time = ktime_get_ns();
-	p->real_start_time = ktime_get_boot_ns();
 	p->io_context = NULL;
 	p->audit_context = NULL;
 	if (clone_flags & CLONE_THREAD)
@@ -1534,6 +1538,17 @@ static struct task_struct *copy_process(unsigned long clone_flags,
 	}
 
 	spin_lock(&current->sighand->siglock);
+
+	/*
+	 * From this point on we must avoid any synchronous user-space
+	 * communication until we take the tasklist-lock. In particular, we do
+	 * not want user-space to be able to predict the process start-time by
+	 * stalling fork(2) after we recorded the start_time but before it is
+	 * visible to the system.
+	 */
+
+	p->start_time = ktime_get_ns();
+	p->real_start_time = ktime_get_boot_ns();
 
 	/*
 	 * Copy seccomp details explicitly here, in case they were changed

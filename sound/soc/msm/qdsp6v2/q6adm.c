@@ -25,7 +25,7 @@
 #include <sound/asound.h>
 #include "msm-dts-srs-tm-config.h"
 #include <sound/adsp_err.h>
-
+#include <sound/sounddebug.h>
 #define TIMEOUT_MS 1000
 
 #define RESET_COPP_ID 99
@@ -2352,7 +2352,10 @@ non_mch_path:
 inval_ch_mod:
 	return rc;
 }
+<<<<<<< HEAD
 /* guoguangyi@mutlmedia,2016.4.23,offload and headset,force use 24bits*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 extern int gis_24bits;
 
 int adm_arrange_mch_ep2_map(struct adm_cmd_device_open_v6 *open_v6,
@@ -2425,7 +2428,10 @@ int adm_open(int port_id, int path, int rate, int channel_mode, int topology,
 	int ret = 0;
 	int port_idx, copp_idx, flags;
 	int tmp_port = q6audio_get_port_id(port_id);
+<<<<<<< HEAD
     //guoguangyi@mutimedia.2016.04.07,qcom's patch
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     //use 24bits to get rid of 16bits innate noise
     if(gis_24bits){
         bit_width = 24;
@@ -2951,7 +2957,10 @@ int adm_close(int port_id, int perf_mode, int copp_idx)
 
 	int ret = 0, port_idx;
 	int copp_id = RESET_COPP_ID;
+<<<<<<< HEAD
     //guoguangyi@mutimedia.2016.04.07,qcom's patch
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     //use 24bits to get rid of 16bits innate noise
     gis_24bits = 0;
 	pr_debug("%s: port_id=0x%x perf_mode: %d copp_idx: %d\n", __func__,

@@ -61,7 +61,11 @@ struct cfg80211_registered_device {
 	struct list_head bss_list;
 	struct rb_root bss_tree;
 	u32 bss_generation;
+<<<<<<< HEAD
 	u32 bss_entries;
+=======
+        u32 bss_entries;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	struct cfg80211_scan_request *scan_req; /* protected by RTNL */
 	struct sk_buff *scan_msg;
 	struct cfg80211_sched_scan_request *sched_scan_req;

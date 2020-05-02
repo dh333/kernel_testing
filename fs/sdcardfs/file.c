@@ -118,11 +118,15 @@ static long sdcardfs_unlocked_ioctl(struct file *file, unsigned int cmd,
 		goto out;
 
 	/* save current_cred and override it */
+<<<<<<< HEAD
 	saved_cred = override_fsids(sbi, SDCARDFS_I(file_inode(file))->data);
 	if (!saved_cred) {
 		err = -ENOMEM;
 		goto out;
 	}
+=======
+	OVERRIDE_CRED(sbi, saved_cred, SDCARDFS_I(file_inode(file)));
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	if (lower_file->f_op->unlocked_ioctl)
 		err = lower_file->f_op->unlocked_ioctl(lower_file, cmd, arg);
@@ -131,7 +135,11 @@ static long sdcardfs_unlocked_ioctl(struct file *file, unsigned int cmd,
 	if (!err)
 		sdcardfs_copy_and_fix_attrs(file_inode(file),
 				      file_inode(lower_file));
+<<<<<<< HEAD
 	revert_fsids(saved_cred);
+=======
+	REVERT_CRED(saved_cred);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 out:
 	return err;
 }
@@ -153,16 +161,24 @@ static long sdcardfs_compat_ioctl(struct file *file, unsigned int cmd,
 		goto out;
 
 	/* save current_cred and override it */
+<<<<<<< HEAD
 	saved_cred = override_fsids(sbi, SDCARDFS_I(file_inode(file))->data);
 	if (!saved_cred) {
 		err = -ENOMEM;
 		goto out;
 	}
+=======
+	OVERRIDE_CRED(sbi, saved_cred, SDCARDFS_I(file_inode(file)));
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	if (lower_file->f_op->compat_ioctl)
 		err = lower_file->f_op->compat_ioctl(lower_file, cmd, arg);
 
+<<<<<<< HEAD
 	revert_fsids(saved_cred);
+=======
+	REVERT_CRED(saved_cred);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 out:
 	return err;
 }
@@ -255,6 +271,7 @@ static int sdcardfs_open(struct inode *inode, struct file *file)
 		goto out_err;
 	}
 
+	file->f_mode |= FMODE_NONMAPPABLE;
 	file->private_data =
 		kzalloc(sizeof(struct sdcardfs_file_info), GFP_KERNEL);
 	if (!SDCARDFS_F(file)) {
@@ -348,6 +365,11 @@ static int sdcardfs_fasync(int fd, struct file *file, int flag)
 		err = lower_file->f_op->fasync(fd, lower_file, flag);
 
 	return err;
+}
+
+static struct file *sdcardfs_get_lower_file(struct file *f)
+{
+	return sdcardfs_lower_file(f);
 }
 
 /*
@@ -446,6 +468,7 @@ const struct file_operations sdcardfs_main_fops = {
 	.release	= sdcardfs_file_release,
 	.fsync		= sdcardfs_fsync,
 	.fasync		= sdcardfs_fasync,
+	.get_lower_file = sdcardfs_get_lower_file,
 	.read_iter	= sdcardfs_read_iter,
 	.write_iter	= sdcardfs_write_iter,
 };
@@ -464,4 +487,5 @@ const struct file_operations sdcardfs_dir_fops = {
 	.flush		= sdcardfs_flush,
 	.fsync		= sdcardfs_fsync,
 	.fasync		= sdcardfs_fasync,
+	.get_lower_file = sdcardfs_get_lower_file,
 };

@@ -3722,7 +3722,10 @@ cmdq_switch:
 		pr_err("%s: %s: mmc_blk_cmdq_switch failed: %d\n",
 			mmc_hostname(host), __func__,  err);
 		ret = err;
+<<<<<<< HEAD
 		goto out;
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 cmdq_unhalt:
 	err = mmc_cmdq_halt(host, false);
@@ -3773,7 +3776,11 @@ static int mmc_blk_cmdq_issue_rq(struct mmc_queue *mq, struct request *req)
 		} else {
 			pr_err("%s: %s: partition switch failed err = %d\n",
 				md->disk->disk_name, __func__, err);
+<<<<<<< HEAD
 			ret = err;
+=======
+			ret = 0;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			goto out;
 		}
 	}

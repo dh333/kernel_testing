@@ -5842,8 +5842,12 @@ void ipa3_proxy_clk_vote(void)
 		return;
 
 	mutex_lock(&ipa3_ctx->q6_proxy_clk_vote_mutex);
+<<<<<<< HEAD
 	if (!ipa3_ctx->q6_proxy_clk_vote_valid ||
 		(ipa3_ctx->q6_proxy_clk_vote_cnt > 0)) {
+=======
+	if (!ipa3_ctx->q6_proxy_clk_vote_valid) {
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		IPA_ACTIVE_CLIENTS_INC_SPECIAL("PROXY_CLK_VOTE");
 		ipa3_ctx->q6_proxy_clk_vote_cnt++;
 		ipa3_ctx->q6_proxy_clk_vote_valid = true;

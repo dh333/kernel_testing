@@ -50,4 +50,16 @@
 /* device can't handle Link Power Management */
 #define USB_QUIRK_NO_LPM			BIT(10)
 
+<<<<<<< HEAD
+=======
+/*
+ * Device reports its bInterval as linear frames instead of the
+ * USB 2.0 calculation.
+ */
+#define USB_QUIRK_LINEAR_FRAME_INTR_BINTERVAL	BIT(11)
+
+/* Device needs a pause after every control message. */
+#define USB_QUIRK_DELAY_CTRL_MSG		BIT(13)
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #endif /* __LINUX_USB_QUIRKS_H */

@@ -69,7 +69,12 @@ module_param(bss_entries_limit, int, 0644);
 MODULE_PARM_DESC(bss_entries_limit,
                  "limit to number of scan BSS entries (per wiphy, default 1000)");
 
+<<<<<<< HEAD
 #define IEEE80211_SCAN_RESULT_EXPIRE	(7 * HZ)
+=======
+
+#define IEEE80211_SCAN_RESULT_EXPIRE	(30 * HZ)
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 static void bss_free(struct cfg80211_internal_bss *bss)
 {
@@ -213,6 +218,10 @@ static bool cfg80211_bss_expire_oldest(struct cfg80211_registered_device *rdev)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
 			   bool send_message)
 {
@@ -759,6 +768,10 @@ static bool cfg80211_combine_bsses(struct cfg80211_registered_device *rdev,
 	/* This is the bad part ... */
 
 	list_for_each_entry(bss, &rdev->bss_list, list) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		/*
 		 * we're iterating all the entries anyway, so take the
 		 * opportunity to validate the list length accounting
@@ -792,11 +805,17 @@ static bool cfg80211_combine_bsses(struct cfg80211_registered_device *rdev,
 		rcu_assign_pointer(bss->pub.beacon_ies,
 				   new->pub.beacon_ies);
 	}
+<<<<<<< HEAD
 
 	WARN_ONCE(n_entries != rdev->bss_entries,
 		  "rdev bss entries[%d]/list[len:%d] corruption\n",
 		  rdev->bss_entries, n_entries);
 
+=======
+	WARN_ONCE(n_entries != rdev->bss_entries,
+		  "rdev bss entries[%d]/list[len:%d] corruption\n",
+		  rdev->bss_entries, n_entries);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	return true;
 }
 

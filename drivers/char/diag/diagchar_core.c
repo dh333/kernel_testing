@@ -457,7 +457,18 @@ static void diag_close_logging_process(const int pid)
 	if (diag_mask_clear_param)
 		diag_clear_masks(pid);
 
+<<<<<<< HEAD
 	mutex_lock(&driver->diagchar_mutex);
+=======
+	mutex_lock(&driver->diag_maskclear_mutex);
+	driver->mask_clear = 1;
+	mutex_unlock(&driver->diag_maskclear_mutex);
+
+	mutex_lock(&driver->diagchar_mutex);
+	session_peripheral_mask = session_info->peripheral_mask;
+	diag_md_session_close(session_info);
+	mutex_unlock(&driver->diagchar_mutex);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	for (i = 0; i < NUM_MD_SESSIONS; i++)
 		if (MD_PERIPHERAL_MASK(i) & session_peripheral_mask)
 			diag_mux_close_peripheral(DIAG_LOCAL_PROC, i);
@@ -1841,10 +1852,15 @@ static int diag_ioctl_lsm_deinit(void)
 		mutex_unlock(&driver->diagchar_mutex);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (!(driver->data_ready[i] & DEINIT_TYPE)) {
 		driver->data_ready[i] |= DEINIT_TYPE;
 		atomic_inc(&driver->data_ready_notif[i]);
 	}
+=======
+
+	driver->data_ready[i] |= DEINIT_TYPE;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&driver->diagchar_mutex);
 	wake_up_interruptible(&driver->wait_q);
 

@@ -279,7 +279,11 @@ static int __f2fs_write_meta_page(struct page *page,
 	if (wbc->for_reclaim && page->index < GET_SUM_BLOCK(sbi, 0))
 		goto redirty_out;
 
+<<<<<<< HEAD
 	f2fs_do_write_meta_page(sbi, page, io_type);
+=======
+	write_meta_page(sbi, page, io_type);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	dec_page_count(sbi, F2FS_DIRTY_META);
 
 	if (wbc->for_reclaim)
@@ -324,7 +328,11 @@ static int f2fs_write_meta_pages(struct address_space *mapping,
 
 	trace_f2fs_writepages(mapping->host, wbc, META);
 	diff = nr_pages_to_write(sbi, META, wbc);
+<<<<<<< HEAD
 	written = f2fs_sync_meta_pages(sbi, META, wbc->nr_to_write, FS_META_IO);
+=======
+	written = sync_meta_pages(sbi, META, wbc->nr_to_write, FS_META_IO);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mutex_unlock(&sbi->cp_mutex);
 	wbc->nr_to_write = max((long)0, wbc->nr_to_write - written - diff);
 	return 0;
@@ -335,7 +343,11 @@ skip_write:
 	return 0;
 }
 
+<<<<<<< HEAD
 long f2fs_sync_meta_pages(struct f2fs_sb_info *sbi, enum page_type type,
+=======
+long sync_meta_pages(struct f2fs_sb_info *sbi, enum page_type type,
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 				long nr_to_write, enum iostat_type io_type)
 {
 	struct address_space *mapping = META_MAPPING(sbi);
@@ -640,9 +652,12 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
 	block_t start_blk, orphan_blocks, i, j;
 	unsigned int s_flags = sbi->sb->s_flags;
 	int err = 0;
+<<<<<<< HEAD
 #ifdef CONFIG_QUOTA
 	int quota_enabled;
 #endif
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	if (!is_set_ckpt_flags(sbi, CP_ORPHAN_PRESENT_FLAG))
 		return 0;
@@ -655,12 +670,17 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
 #ifdef CONFIG_QUOTA
 	/* Needed for iput() to work correctly and not trash data */
 	sbi->sb->s_flags |= MS_ACTIVE;
+<<<<<<< HEAD
 
 	/*
 	 * Turn on quotas which were not enabled for read-only mounts if
 	 * filesystem has quota feature, so that they are updated correctly.
 	 */
 	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & MS_RDONLY);
+=======
+	/* Turn on quotas so that they are updated correctly */
+	f2fs_enable_quota_files(sbi);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #endif
 
 	start_blk = __start_cp_addr(sbi) + 1 + __cp_payload(sbi);
@@ -694,8 +714,12 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
 out:
 #ifdef CONFIG_QUOTA
 	/* Turn quotas off */
+<<<<<<< HEAD
 	if (quota_enabled)
 		f2fs_quota_off_umount(sbi->sb);
+=======
+	f2fs_quota_off_umount(sbi->sb);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #endif
 	sbi->sb->s_flags = s_flags; /* Restore MS_RDONLY status */
 
@@ -1128,9 +1152,13 @@ retry_flush_nodes:
 
 	if (get_pages(sbi, F2FS_DIRTY_NODES)) {
 		up_write(&sbi->node_write);
+<<<<<<< HEAD
 		atomic_inc(&sbi->wb_sync_req[NODE]);
 		err = f2fs_sync_node_pages(sbi, &wbc, false, FS_CP_NODE_IO);
 		atomic_dec(&sbi->wb_sync_req[NODE]);
+=======
+		err = sync_node_pages(sbi, &wbc, false, FS_CP_NODE_IO);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (err) {
 			up_write(&sbi->node_change);
 			f2fs_unlock_all(sbi);
@@ -1272,7 +1300,11 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 
 	/* Flush all the NAT/SIT pages */
 	while (get_pages(sbi, F2FS_DIRTY_META)) {
+<<<<<<< HEAD
 		f2fs_sync_meta_pages(sbi, META, LONG_MAX, FS_CP_META_IO);
+=======
+		sync_meta_pages(sbi, META, LONG_MAX, FS_CP_META_IO);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (unlikely(f2fs_cp_error(sbi)))
 			break;
 	}
@@ -1351,8 +1383,12 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 
 		/* Flush all the NAT BITS pages */
 		while (get_pages(sbi, F2FS_DIRTY_META)) {
+<<<<<<< HEAD
 			f2fs_sync_meta_pages(sbi, META, LONG_MAX,
 							FS_CP_META_IO);
+=======
+			sync_meta_pages(sbi, META, LONG_MAX, FS_CP_META_IO);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			if (unlikely(f2fs_cp_error(sbi)))
 				break;
 		}
@@ -1389,8 +1425,13 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 	sbi->last_valid_block_count = sbi->total_valid_block_count;
 	percpu_counter_set(&sbi->alloc_valid_block_count, 0);
 
+<<<<<<< HEAD
 	/* Here, we have one bio having CP pack except cp pack 2 page */
 	f2fs_sync_meta_pages(sbi, META, LONG_MAX, FS_CP_META_IO);
+=======
+	/* Here, we only have one bio having CP pack */
+	sync_meta_pages(sbi, META_FLUSH, LONG_MAX, FS_CP_META_IO);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	/* wait for previous submitted meta pages writeback */
 	f2fs_wait_on_all_pages_writeback(sbi);

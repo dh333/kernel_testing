@@ -116,8 +116,8 @@ int xhci_halt(struct xhci_hcd *xhci)
 	if (!ret) {
 		xhci->xhc_state |= XHCI_STATE_HALTED;
 	} else {
-		xhci_warn(xhci, "Host not halted after %u microseconds.\n",
-				XHCI_MAX_HALT_USEC);
+		xhci_warn(xhci, "Host not halted after %u microseconds. ret:%d\n",
+				XHCI_MAX_HALT_USEC, ret);
 	}
 
 	xhci->cmd_ring_state = CMD_RING_STATE_STOPPED;
@@ -2838,7 +2838,10 @@ int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
 	xhci_dbg_ctx(xhci, virt_dev->in_ctx,
 		     LAST_CTX_TO_EP_NUM(le32_to_cpu(slot_ctx->dev_info)));
 
+<<<<<<< HEAD
 	//Anderson@, 2016/09/21, If host controller is not halted, otg can't work
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	xhci_warn(xhci, "hcd->state:%d\n",hcd->state);
 	if(hcd->state == HC_STATE_QUIESCING){
 		goto command_cleanup;
@@ -4437,6 +4440,14 @@ static u16 xhci_calculate_u1_timeout(struct xhci_hcd *xhci,
 {
 	unsigned long long timeout_ns;
 
+	/* Prevent U1 if service interval is shorter than U1 exit latency */
+	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+		if (xhci_service_interval_to_ns(desc) <= udev->u1_params.mel) {
+			dev_dbg(&udev->dev, "Disable U1, ESIT shorter than exit latency\n");
+			return USB3_LPM_DISABLED;
+		}
+	}
+
 	if (xhci->quirks & XHCI_INTEL_HOST)
 		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
 	else
@@ -4492,6 +4503,14 @@ static u16 xhci_calculate_u2_timeout(struct xhci_hcd *xhci,
 		struct usb_endpoint_descriptor *desc)
 {
 	unsigned long long timeout_ns;
+
+	/* Prevent U2 if service interval is shorter than U2 exit latency */
+	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+		if (xhci_service_interval_to_ns(desc) <= udev->u2_params.mel) {
+			dev_dbg(&udev->dev, "Disable U2, ESIT shorter than exit latency\n");
+			return USB3_LPM_DISABLED;
+		}
+	}
 
 	if (xhci->quirks & XHCI_INTEL_HOST)
 		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);

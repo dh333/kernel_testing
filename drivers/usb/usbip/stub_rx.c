@@ -380,6 +380,18 @@ static int get_pipe(struct stub_device *sdev, int epnum, int dir)
 	}
 
 	if (usb_endpoint_xfer_isoc(epd)) {
+<<<<<<< HEAD
+=======
+		/* validate number of packets */
+		if (pdu->u.cmd_submit.number_of_packets < 0 ||
+		    pdu->u.cmd_submit.number_of_packets >
+		    USBIP_MAX_ISO_PACKETS) {
+			dev_err(&sdev->udev->dev,
+				"CMD_SUBMIT: isoc invalid num packets %d\n",
+				pdu->u.cmd_submit.number_of_packets);
+			return -1;
+		}
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (dir == USBIP_DIR_OUT)
 			return usb_sndisocpipe(udev, epnum);
 		else

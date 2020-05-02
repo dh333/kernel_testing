@@ -65,7 +65,11 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
 	}
 
 	if (f2fs_sb_has_project_quota(sbi->sb) &&
+<<<<<<< HEAD
 		(F2FS_I(dir)->i_flags & F2FS_PROJINHERIT_FL))
+=======
+		(F2FS_I(dir)->i_flags & FS_PROJINHERIT_FL))
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		F2FS_I(inode)->i_projid = F2FS_I(dir)->i_projid;
 	else
 		F2FS_I(inode)->i_projid = make_kprojid(&init_user_ns,
@@ -82,6 +86,11 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
 	if ((f2fs_encrypted_inode(dir) || DUMMY_ENCRYPTION_ENABLED(sbi)) &&
 				f2fs_may_encrypt(inode))
 		f2fs_set_encrypted_inode(inode);
+
+	if (f2fs_sb_has_extra_attr(sbi->sb)) {
+		set_inode_flag(inode, FI_EXTRA_ATTR);
+		F2FS_I(inode)->i_extra_isize = F2FS_TOTAL_EXTRA_ATTR_SIZE;
+	}
 
 	if (f2fs_sb_has_extra_attr(sbi->sb)) {
 		set_inode_flag(inode, FI_EXTRA_ATTR);
@@ -117,9 +126,15 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
 		f2fs_mask_flags(mode, F2FS_I(dir)->i_flags & F2FS_FL_INHERITED);
 
 	if (S_ISDIR(inode->i_mode))
+<<<<<<< HEAD
 		F2FS_I(inode)->i_flags |= F2FS_INDEX_FL;
 
 	if (F2FS_I(inode)->i_flags & F2FS_PROJINHERIT_FL)
+=======
+		F2FS_I(inode)->i_flags |= FS_INDEX_FL;
+
+	if (F2FS_I(inode)->i_flags & FS_PROJINHERIT_FL)
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		set_inode_flag(inode, FI_PROJ_INHERIT);
 
 	trace_f2fs_new_inode(inode, 0);
@@ -318,6 +333,11 @@ static int f2fs_link(struct dentry *old_dentry, struct inode *dir,
 	err = fscrypt_prepare_link(old_dentry, dir, dentry);
 	if (err)
 		return err;
+
+	if (is_inode_flag_set(dir, FI_PROJ_INHERIT) &&
+			(!projid_eq(F2FS_I(dir)->i_projid,
+			F2FS_I(old_dentry->d_inode)->i_projid)))
+		return -EXDEV;
 
 	if (is_inode_flag_set(dir, FI_PROJ_INHERIT) &&
 			(!projid_eq(F2FS_I(dir)->i_projid,
@@ -584,7 +604,30 @@ static int f2fs_symlink(struct inode *dir, struct dentry *dentry,
 	if (err)
 		goto out_f2fs_handle_failed_inode;
 	f2fs_unlock_op(sbi);
+<<<<<<< HEAD
 	f2fs_alloc_nid_done(sbi, inode->i_ino);
+=======
+	alloc_nid_done(sbi, inode->i_ino);
+
+	if (f2fs_encrypted_inode(inode)) {
+		struct qstr istr = QSTR_INIT(symname, len);
+		struct fscrypt_str ostr;
+
+		sd = kzalloc(disk_link.len, GFP_NOFS);
+		if (!sd) {
+			err = -ENOMEM;
+			goto err_out;
+		}
+
+		err = fscrypt_get_encryption_info(inode);
+		if (err)
+			goto err_out;
+
+		if (!fscrypt_has_encryption_key(inode)) {
+			err = -ENOKEY;
+			goto err_out;
+		}
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	err = fscrypt_encrypt_symlink(inode, symname, len, &disk_link);
 	if (err)
@@ -615,6 +658,7 @@ err_out:
 	}
 
 	f2fs_balance_fs(sbi, true);
+<<<<<<< HEAD
 	goto out_free_encrypted_link;
 
 out_f2fs_handle_failed_inode:
@@ -622,6 +666,11 @@ out_f2fs_handle_failed_inode:
 out_free_encrypted_link:
 	if (disk_link.name != (unsigned char *)symname)
 		kfree(disk_link.name);
+=======
+	return err;
+out:
+	handle_failed_inode(inode);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	return err;
 }
 
@@ -703,7 +752,11 @@ static int f2fs_mknod(struct inode *dir, struct dentry *dentry,
 		goto out;
 	f2fs_unlock_op(sbi);
 
+<<<<<<< HEAD
 	f2fs_alloc_nid_done(sbi, inode->i_ino);
+=======
+	alloc_nid_done(sbi, inode->i_ino);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	d_instantiate_new(dentry, inode);
 
@@ -817,6 +870,11 @@ static int f2fs_rename(struct inode *old_dir, struct dentry *old_dentry,
 
 	if (unlikely(f2fs_cp_error(sbi)))
 		return -EIO;
+
+	if (is_inode_flag_set(new_dir, FI_PROJ_INHERIT) &&
+			(!projid_eq(F2FS_I(new_dir)->i_projid,
+			F2FS_I(old_dentry->d_inode)->i_projid)))
+		return -EXDEV;
 
 	if (is_inode_flag_set(new_dir, FI_PROJ_INHERIT) &&
 			(!projid_eq(F2FS_I(new_dir)->i_projid,
@@ -999,6 +1057,14 @@ static int f2fs_cross_rename(struct inode *old_dir, struct dentry *old_dentry,
 
 	if (unlikely(f2fs_cp_error(sbi)))
 		return -EIO;
+
+	if ((is_inode_flag_set(new_dir, FI_PROJ_INHERIT) &&
+			!projid_eq(F2FS_I(new_dir)->i_projid,
+			F2FS_I(old_dentry->d_inode)->i_projid)) ||
+	    (is_inode_flag_set(new_dir, FI_PROJ_INHERIT) &&
+			!projid_eq(F2FS_I(old_dir)->i_projid,
+			F2FS_I(new_dentry->d_inode)->i_projid)))
+		return -EXDEV;
 
 	if ((is_inode_flag_set(new_dir, FI_PROJ_INHERIT) &&
 			!projid_eq(F2FS_I(new_dir)->i_projid,

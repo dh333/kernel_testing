@@ -73,6 +73,7 @@ static struct mhi_dev *mhi_ctx;
 static void mhi_hwc_cb(void *priv, enum ipa_mhi_event_type event,
 	unsigned long data);
 static void mhi_ring_init_cb(void *user_data);
+<<<<<<< HEAD
 static void mhi_update_state_info(uint32_t uevent_idx, enum mhi_ctrl_info info);
 static int mhi_deinit(struct mhi_dev *mhi);
 static void mhi_dev_resume_init_with_link_up(struct ep_pcie_notify *notify);
@@ -95,6 +96,9 @@ static void  mhi_dev_ring_cache_completion_cb(void *req)
 	else
 		mhi_log(MHI_MSG_ERROR, "ring cache req is NULL\n");
 }
+=======
+static void mhi_update_state_info(uint32_t info);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 void mhi_dev_read_from_host(struct mhi_dev *mhi, struct mhi_addr *transfer)
 {
@@ -716,10 +720,14 @@ static void mhi_hwc_cb(void *priv, enum ipa_mhi_event_type event,
 			return;
 		}
 
+<<<<<<< HEAD
 		mhi_update_state_info(MHI_DEV_UEVENT_CTRL, MHI_STATE_CONNECTED);
 
 		ep_pcie_mask_irq_event(mhi_ctx->phandle,
 				EP_PCIE_INT_EVT_MHI_A7, true);
+=======
+		mhi_update_state_info(MHI_STATE_CONNECTED);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		break;
 	case IPA_MHI_EVENT_DATA_AVAILABLE:
 		rc = mhi_dev_notify_sm_event(MHI_DEV_EVENT_HW_ACC_WAKEUP);
@@ -1066,8 +1074,11 @@ static void mhi_dev_process_cmd_ring(struct mhi_dev *mhi,
 	struct mhi_addr host_addr;
 	struct mhi_dev_channel *ch;
 	struct mhi_dev_ring *ring;
+<<<<<<< HEAD
 	char *connected[2] = { "MHI_CHANNEL_STATE_12=CONNECTED", NULL};
 	char *disconnected[2] = { "MHI_CHANNEL_STATE_12=DISCONNECTED", NULL};
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	ch_id = el->generic.chid;
 	mhi_log(MHI_MSG_VERBOSE, "for channel:%d and cmd:%d\n",
@@ -1196,6 +1207,7 @@ send_start_completion_event:
 				pr_err("stop event send failed\n");
 
 			mutex_unlock(&ch->ch_lock);
+<<<<<<< HEAD
 			mhi_update_state_info(ch_id, MHI_STATE_DISCONNECTED);
 			if (ch_id == MHI_CLIENT_MBIM_OUT) {
 				rc = kobject_uevent_env(&mhi_ctx->dev->kobj,
@@ -1203,6 +1215,8 @@ send_start_completion_event:
 				if (rc)
 					pr_err("Error sending uevent %d\n", rc);
 			}
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		}
 		break;
 	case MHI_DEV_RING_EL_RESET:
@@ -1276,6 +1290,7 @@ send_start_completion_event:
 			if (rc)
 				pr_err("Error sending command completion event\n");
 			mutex_unlock(&ch->ch_lock);
+<<<<<<< HEAD
 			mhi_update_state_info(ch_id, MHI_STATE_DISCONNECTED);
 			if (ch_id == MHI_CLIENT_MBIM_OUT) {
 				rc = kobject_uevent_env(&mhi_ctx->dev->kobj,
@@ -1283,6 +1298,8 @@ send_start_completion_event:
 				if (rc)
 					pr_err("Error sending uevent %d\n", rc);
 			}
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		}
 		break;
 	default:
@@ -1880,6 +1897,7 @@ int mhi_dev_suspend(struct mhi_dev *mhi)
 				MHI_DEV_DMA_SYNC);
 
 	}
+	mhi_update_state_info(MHI_STATE_DISCONNECTED);
 
 	atomic_set(&mhi->mhi_dev_wake, 0);
 	pm_relax(mhi->dev);
@@ -1919,7 +1937,11 @@ int mhi_dev_resume(struct mhi_dev *mhi)
 		mhi_dev_write_to_host(mhi, &data_transfer, NULL,
 				MHI_DEV_DMA_SYNC);
 	}
+<<<<<<< HEAD
 	mhi_update_state_info(MHI_DEV_UEVENT_CTRL, MHI_STATE_CONNECTED);
+=======
+	mhi_update_state_info(MHI_STATE_CONNECTED);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	atomic_set(&mhi->is_suspended, 0);
 
@@ -2523,6 +2545,7 @@ static void mhi_dev_enable(struct work_struct *work)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (mhi_ctx->config_iatu || mhi_ctx->mhi_int) {
 		mhi_ctx->mhi_int_en = true;
 		enable_irq(mhi_ctx->mhi_irq);
@@ -2530,6 +2553,12 @@ static void mhi_dev_enable(struct work_struct *work)
 
 	mhi_update_state_info(MHI_DEV_UEVENT_CTRL,
 						MHI_STATE_CONFIGURED);
+=======
+	if (mhi_ctx->config_iatu || mhi_ctx->mhi_int)
+		enable_irq(mhi_ctx->mhi_irq);
+
+	mhi_update_state_info(MHI_STATE_CONNECTED);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 }
 
 static void mhi_ring_init_cb(void *data)
@@ -2544,6 +2573,7 @@ static void mhi_ring_init_cb(void *data)
 	queue_work(mhi->ring_init_wq, &mhi->ring_init_cb_work);
 }
 
+<<<<<<< HEAD
 int mhi_register_state_cb(void (*mhi_state_cb)
 				(struct mhi_dev_client_cb_data *cb_data),
 				void *data, enum mhi_client_channel channel)
@@ -2609,18 +2639,36 @@ static void mhi_update_state_info(uint32_t uevent_idx, enum mhi_ctrl_info info)
 }
 
 int mhi_ctrl_state_info(uint32_t idx, uint32_t *info)
+=======
+static void mhi_update_state_info(uint32_t info)
+{
+	struct mhi_dev_client_cb_reason reason;
+
+	mhi_ctx->ctrl_info = info;
+
+	reason.reason = MHI_DEV_CTRL_UPDATE;
+	uci_ctrl_update(&reason);
+}
+
+int mhi_ctrl_state_info(uint32_t *info)
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 {
 	if (!info) {
 		pr_err("Invalid info\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (idx == MHI_DEV_UEVENT_CTRL)
 		*info = mhi_ctx->ctrl_info;
 	else
 		*info = channel_state_info[idx].ctrl_info;
 
 	mhi_log(MHI_MSG_VERBOSE, "idx:%d, ctrl:%d", idx, *info);
+=======
+	*info = mhi_ctx->ctrl_info;
+	mhi_log(MHI_MSG_VERBOSE, "ctrl:%d", mhi_ctx->ctrl_info);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	return 0;
 }
@@ -3075,6 +3123,7 @@ static int mhi_dev_probe(struct platform_device *pdev)
 			pr_err("Error reading MHI Dev DT\n");
 			return rc;
 		}
+<<<<<<< HEAD
 		mhi_ipc_log = ipc_log_context_create(MHI_IPC_LOG_PAGES,
 								"mhi", 0);
 		if (mhi_ipc_log == NULL) {
@@ -3100,6 +3149,10 @@ static int mhi_dev_probe(struct platform_device *pdev)
 	if (!mhi_ctx->pcie_event_wq) {
 		rc = -ENOMEM;
 		return rc;
+=======
+		mhi_uci_init();
+		mhi_update_state_info(MHI_STATE_CONFIGURED);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 
 	mhi_ctx->phandle = ep_pcie_get_phandle(mhi_ctx->ifc_id);

@@ -782,14 +782,21 @@ config TRI_STATE_KEY
 	tristate "switch Profiles by this triple key"
 	help
 	 Say Y here if you want to enable the feature.
+<<<<<<< HEAD
 #add end
 
 #add for fpc1022 fingerprints
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 config FINGERPRINT_FPC1022
 	default n
 	tristate "fpc fingerprint sensor support"
 	depends on SPI_MASTER
+<<<<<<< HEAD
 #add end
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 config INPUT_DRV2667_HAPTICS
 	tristate "TI DRV2667 haptics support"

@@ -115,8 +115,13 @@ mapped:
 	/* fill the page */
 	f2fs_wait_on_page_writeback(page, DATA, false);
 
+<<<<<<< HEAD
 	/* wait for GCed page writeback via META_MAPPING */
 	if (f2fs_post_read_required(inode))
+=======
+	/* wait for GCed encrypted page writeback */
+	if (f2fs_encrypted_file(inode))
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		f2fs_wait_on_block_writeback(sbi, dn.data_blkaddr);
 
 out_sem:
@@ -224,6 +229,9 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
 
 	trace_f2fs_sync_file_enter(inode);
 
+	if (S_ISDIR(inode->i_mode))
+		goto go_write;
+
 	/* if fdatasync is triggered, let's do in-place-update */
 	if (datasync || get_dirty_pages(inode) <= SM_I(sbi)->min_fsync_blocks)
 		set_inode_flag(inode, FI_NEED_IPU);
@@ -306,7 +314,11 @@ sync_nodes:
 	 * given fsync mark.
 	 */
 	if (!atomic) {
+<<<<<<< HEAD
 		ret = f2fs_wait_on_node_pages_writeback(sbi, seq_id);
+=======
+		ret = wait_on_node_pages_writeback(sbi, ino);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (ret)
 			goto out;
 	}
@@ -421,6 +433,11 @@ static loff_t f2fs_seek_block(struct file *file, loff_t offset, int whence)
 				dn.ofs_in_node++, pgofs++,
 				data_ofs = (loff_t)pgofs << PAGE_SHIFT) {
 			block_t blkaddr;
+<<<<<<< HEAD
+=======
+			blkaddr = datablock_addr(dn.inode,
+					dn.node_page, dn.ofs_in_node);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 			blkaddr = datablock_addr(dn.inode,
 					dn.node_page, dn.ofs_in_node);
@@ -1009,7 +1026,11 @@ next_dnode:
 	for (i = 0; i < done; i++, blkaddr++, do_replace++, dn.ofs_in_node++) {
 		*blkaddr = datablock_addr(dn.inode,
 					dn.node_page, dn.ofs_in_node);
+<<<<<<< HEAD
 		if (!f2fs_is_checkpointed_data(sbi, *blkaddr)) {
+=======
+		if (!is_checkpointed_data(sbi, *blkaddr)) {
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 			if (test_opt(sbi, LFS)) {
 				f2fs_put_dnode(&dn);
@@ -1091,7 +1112,11 @@ static int __clone_blkaddrs(struct inode *src_inode, struct inode *dst_inode,
 			do {
 				dn.data_blkaddr = datablock_addr(dn.inode,
 						dn.node_page, dn.ofs_in_node);
+<<<<<<< HEAD
 				f2fs_truncate_data_blocks_range(&dn, 1);
+=======
+				truncate_data_blocks_range(&dn, 1);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 				if (do_replace[i]) {
 					f2fs_i_blocks_write(src_inode,
@@ -1747,7 +1772,12 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
 					inode->i_ino, get_dirty_pages(inode));
 	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
 	if (ret) {
+<<<<<<< HEAD
 		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+=======
+		clear_inode_flag(inode, FI_ATOMIC_FILE);
+		clear_inode_flag(inode, FI_HOT_DATA);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		goto out;
 	}
 skip_flush:
@@ -1794,7 +1824,11 @@ static int f2fs_ioc_commit_atomic_write(struct file *filp)
 		ret = f2fs_do_sync_file(filp, 0, LLONG_MAX, 0, true);
 		if (!ret) {
 			clear_inode_flag(inode, FI_ATOMIC_FILE);
+<<<<<<< HEAD
 			F2FS_I(inode)->i_gc_failures[GC_FAILURE_ATOMIC] = 0;
+=======
+			clear_inode_flag(inode, FI_HOT_DATA);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 			stat_dec_atomic_write(inode);
 		}
 	} else {
@@ -1951,7 +1985,11 @@ static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
 		set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
 		break;
 	case F2FS_GOING_DOWN_METAFLUSH:
+<<<<<<< HEAD
 		f2fs_sync_meta_pages(sbi, META, LONG_MAX, FS_META_IO);
+=======
+		sync_meta_pages(sbi, META, LONG_MAX, FS_META_IO);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		f2fs_stop_checkpoint(sbi, false);
 		set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
 		break;
@@ -2806,11 +2844,15 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
 			return err;
 		}
 		ret = __generic_file_write_iter(iocb, from);
+<<<<<<< HEAD
 		clear_inode_flag(inode, FI_NO_PREALLOC);
 
 		/* if we couldn't write data, we should deallocate blocks. */
 		if (preallocated && i_size_read(inode) < target_size)
 			f2fs_truncate(inode);
+=======
+		blk_finish_plug(&plug);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 		if (ret > 0)
 			f2fs_update_iostat(F2FS_I_SB(inode), APP_WRITE_IO, ret);

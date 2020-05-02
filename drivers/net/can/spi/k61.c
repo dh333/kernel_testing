@@ -60,7 +60,10 @@ struct k61_can {
 	int cmd_result;
 	int bits_per_word;
 	int reset_delay_msec;
+<<<<<<< HEAD
 	s64 time_diff;
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 };
 
 struct k61_netdev_privdata {
@@ -959,6 +962,7 @@ static int k61_remove(struct spi_device *spi)
 
 static const struct of_device_id k61_match_table[] = {
 	{ .compatible = "fsl,k61" },
+	{ .compatible = "nxp,mpc5746c" },
 	{ }
 };
 

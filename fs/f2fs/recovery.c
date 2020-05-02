@@ -156,7 +156,11 @@ retry:
 
 		dquot_initialize(einode);
 
+<<<<<<< HEAD
 		err = f2fs_acquire_orphan_inode(F2FS_I_SB(inode));
+=======
+		err = acquire_orphan_inode(F2FS_I_SB(inode));
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if (err) {
 			iput(einode);
 			goto out_put;
@@ -418,7 +422,11 @@ out:
 truncate_out:
 	if (datablock_addr(tdn.inode, tdn.node_page,
 					tdn.ofs_in_node) == blkaddr)
+<<<<<<< HEAD
 		f2fs_truncate_data_blocks_range(&tdn, 1);
+=======
+		truncate_data_blocks_range(&tdn, 1);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	if (dn->inode->i_ino == nid && !dn->inode_page_locked)
 		unlock_page(dn->inode_page);
 	return 0;
@@ -638,6 +646,18 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
 	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & MS_RDONLY);
 #endif
 
+	if (s_flags & MS_RDONLY) {
+		f2fs_msg(sbi->sb, KERN_INFO, "orphan cleanup on readonly fs");
+		sbi->sb->s_flags &= ~MS_RDONLY;
+	}
+
+#ifdef CONFIG_QUOTA
+	/* Needed for iput() to work correctly and not trash data */
+	sbi->sb->s_flags |= MS_ACTIVE;
+	/* Turn on quotas so that they are updated correctly */
+	f2fs_enable_quota_files(sbi);
+#endif
+
 	fsync_entry_slab = f2fs_kmem_cache_create("f2fs_fsync_inode_entry",
 			sizeof(struct fsync_inode_entry));
 	if (!fsync_entry_slab) {
@@ -696,8 +716,12 @@ skip:
 out:
 #ifdef CONFIG_QUOTA
 	/* Turn quotas off */
+<<<<<<< HEAD
 	if (quota_enabled)
 		f2fs_quota_off_umount(sbi->sb);
+=======
+	f2fs_quota_off_umount(sbi->sb);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #endif
 	sbi->sb->s_flags = s_flags; /* Restore MS_RDONLY status */
 

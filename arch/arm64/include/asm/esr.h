@@ -136,7 +136,12 @@
 
 /* ISS field definitions for System instruction traps */
 #define ESR_ELx_SYS64_ISS_RES0_SHIFT	22
+<<<<<<< HEAD
 #define ESR_ELx_SYS64_ISS_RES0_MASK	(UL(0x7) << ESR_ELx_SYS64_ISS_RES0_SHIFT)
+=======
+#define ESR_ELx_SYS64_ISS_RES0_MASK	\
+				(UL(0x7) << ESR_ELx_SYS64_ISS_RES0_SHIFT)
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #define ESR_ELx_SYS64_ISS_DIR_MASK	0x1
 #define ESR_ELx_SYS64_ISS_DIR_READ	0x1
 #define ESR_ELx_SYS64_ISS_DIR_WRITE	0x0
@@ -159,20 +164,42 @@
 					 ESR_ELx_SYS64_ISS_CRN_MASK | \
 					 ESR_ELx_SYS64_ISS_CRM_MASK)
 #define ESR_ELx_SYS64_ISS_SYS_VAL(op0, op1, op2, crn, crm) \
+<<<<<<< HEAD
 					(((op0) << ESR_ELx_SYS64_ISS_OP0_SHIFT) | \
 					 ((op1) << ESR_ELx_SYS64_ISS_OP1_SHIFT) | \
 					 ((op2) << ESR_ELx_SYS64_ISS_OP2_SHIFT) | \
 					 ((crn) << ESR_ELx_SYS64_ISS_CRN_SHIFT) | \
 					 ((crm) << ESR_ELx_SYS64_ISS_CRM_SHIFT))
+=======
+				(((op0) << ESR_ELx_SYS64_ISS_OP0_SHIFT) | \
+				 ((op1) << ESR_ELx_SYS64_ISS_OP1_SHIFT) | \
+				 ((op2) << ESR_ELx_SYS64_ISS_OP2_SHIFT) | \
+				 ((crn) << ESR_ELx_SYS64_ISS_CRN_SHIFT) | \
+				 ((crm) << ESR_ELx_SYS64_ISS_CRM_SHIFT))
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 #define ESR_ELx_SYS64_ISS_SYS_OP_MASK	(ESR_ELx_SYS64_ISS_SYS_MASK | \
 					 ESR_ELx_SYS64_ISS_DIR_MASK)
 
+<<<<<<< HEAD
 #define ESR_ELx_SYS64_ISS_SYS_CNTVCT	(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 2, 14, 0) | \
 					 ESR_ELx_SYS64_ISS_DIR_READ)
 
 #define ESR_ELx_SYS64_ISS_SYS_CNTFRQ	(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 0, 14, 0) | \
 					 ESR_ELx_SYS64_ISS_DIR_READ)
+=======
+#define ESR_ELx_SYS64_ISS_SYS_CNTVCT	\
+				(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 2, 14, 0) | \
+				 ESR_ELx_SYS64_ISS_DIR_READ)
+
+#define ESR_ELx_SYS64_ISS_SYS_CNTFRQ	\
+				(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 0, 14, 0) | \
+				 ESR_ELx_SYS64_ISS_DIR_READ)
+
+#define ESR_ELx_SYS64_ISS_SYS_CNTPCT	\
+				(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 1, 14, 0) | \
+				 ESR_ELx_SYS64_ISS_DIR_READ)
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 #ifndef __ASSEMBLY__
 #include <asm/types.h>

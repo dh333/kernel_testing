@@ -87,12 +87,18 @@ struct gpio_chip {
 						unsigned offset, int value);
 	int			(*get)(struct gpio_chip *chip,
 						unsigned offset);
+<<<<<<< HEAD
 /*2017-08-22 add for dash adapter update*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	int			(*get_dash)(struct gpio_chip *chip,
 					unsigned offset);
 	void			(*set)(struct gpio_chip *chip,
 						unsigned offset, int value);
+<<<<<<< HEAD
 /*2017-08-22 add for dash adapter update*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	void			(*set_dash)(struct gpio_chip *chip,
 						unsigned offset, int value);
 	int			(*set_debounce)(struct gpio_chip *chip,

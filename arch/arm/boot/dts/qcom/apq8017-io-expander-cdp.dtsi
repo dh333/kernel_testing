@@ -39,7 +39,11 @@
 		compatible = "sx1509q";
 		#gpio-cells = <2>;
 		gpio-controller;
+<<<<<<< HEAD
 		reg = <0x3e>; /* I2C Client Addr */
+=======
+		reg = <0x3E>; /* I2C Client Addr */
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		sx150x,pullup_ena = <0x0>;
 		sx150x,pulldn_ena = <0x0>;
 		sx150x,float_ena = <0x00>;
@@ -66,7 +70,10 @@
 		qcom,vdd-max-voltage = <1800000>;
 		qcom,vdd-min-voltage = <1800000>;
 	};
+<<<<<<< HEAD
 
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	/* usb2533 flex hub */
 	usb2533@2c {
 		status = "disabled";
@@ -93,3 +100,7 @@
 		spi-max-frequency = <40000000>;
 	};
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0

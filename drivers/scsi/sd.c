@@ -205,6 +205,12 @@ cache_type_store(struct device *dev, struct device_attribute *attr,
 	buffer_data[2] |= wce << 2 | rcd;
 	sp = buffer_data[0] & 0x80 ? 1 : 0;
 
+	/*
+	 * Ensure WP, DPOFUA, and RESERVED fields are cleared in
+	 * received mode parameter buffer before doing MODE SELECT.
+	 */
+	data.device_specific = 0;
+
 	if (scsi_mode_select(sdp, 1, sp, 8, buffer_data, len, SD_TIMEOUT,
 			     SD_MAX_RETRIES, &data, &sshdr)) {
 		if (scsi_sense_valid(&sshdr))
@@ -2260,6 +2266,10 @@ sd_read_write_protect_flag(struct scsi_disk *sdkp, unsigned char *buffer)
 	int res;
 	struct scsi_device *sdp = sdkp->device;
 	struct scsi_mode_data data;
+<<<<<<< HEAD
+=======
+	int disk_ro = get_disk_ro(sdkp->disk);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	set_disk_ro(sdkp->disk, 0);
 	if (sdp->skip_ms_page_3f) {
@@ -2299,7 +2309,11 @@ sd_read_write_protect_flag(struct scsi_disk *sdkp, unsigned char *buffer)
 			  "Test WP failed, assume Write Enabled\n");
 	} else {
 		sdkp->write_prot = ((data.device_specific & 0x80) != 0);
+<<<<<<< HEAD
 		set_disk_ro(sdkp->disk, sdkp->write_prot);
+=======
+		set_disk_ro(sdkp->disk, sdkp->write_prot || disk_ro);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 }
 

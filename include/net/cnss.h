@@ -273,6 +273,11 @@ extern int cnss_common_register_tsf_captured_handler(struct device *dev,
 						     void *ctx);
 extern int cnss_common_unregister_tsf_captured_handler(struct device *dev,
 						       void *ctx);
+<<<<<<< HEAD
 extern int cnss_common_set_sleep_power_mode(struct device *dev,
 					    enum cnss_sleep_power_mode mode);
+=======
+extern void cnss_set_fw_version(u32 version);
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #endif /* _NET_CNSS_H_ */

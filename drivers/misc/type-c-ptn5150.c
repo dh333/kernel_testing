@@ -567,7 +567,11 @@ static irqreturn_t ptn5150_irq_thread(int irq, void *handle)
 	{
 	    // Detach
 	    dev_err(&info->i2c->dev,"%s: Detach interrupt!\n", __func__);
+<<<<<<< HEAD
 	info->fusb_type = PTN5150_TYPE_NONE;
+=======
+     	info->fusb_type = PTN5150_TYPE_NONE;
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
         info->fusb_orient= PTN5150_ORIENT_NO_CONN;
 	}
 	else
@@ -693,6 +697,7 @@ static int ptn5150_gpio_configure(struct ptn5150_info *info)
 				goto err_irq_gpio_dir;
 			}
 			info->irq = gpio_to_irq(info->irq_gpio);
+<<<<<<< HEAD
 		if (info->irq < 0) {
 			dev_err(&info->i2c->dev,
 				"Unable to get irq number for GPIO %d, error %d\n",
@@ -700,6 +705,15 @@ static int ptn5150_gpio_configure(struct ptn5150_info *info)
 			retval = info->irq;
 			goto err_irq_gpio_dir;
 		}
+=======
+        	if (info->irq < 0) {
+        		dev_err(&info->i2c->dev,
+        			"Unable to get irq number for GPIO %d, error %d\n",
+        				info->irq_gpio, info->irq);
+        		retval = info->irq;
+        		goto err_irq_gpio_dir;
+        	}
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		} else {
 			dev_err(&info->i2c->dev,
 				"irq gpio not provided\n");
@@ -724,6 +738,7 @@ static int ptn5150_gpio_configure(struct ptn5150_info *info)
 				goto err_irq_gpio_to_irq;
 			}
 			info->OTG_USB_ID_irq = gpio_to_irq(info->ID_gpio);
+<<<<<<< HEAD
 		if (info->OTG_USB_ID_irq < 0) {
 			dev_err(&info->i2c->dev,
 				"Unable to get irq number for GPIO %d, error %d\n",
@@ -731,6 +746,15 @@ static int ptn5150_gpio_configure(struct ptn5150_info *info)
 			retval = info->OTG_USB_ID_irq;
 			goto err_irq_gpio_dir;
 		}
+=======
+        	if (info->OTG_USB_ID_irq < 0) {
+        		dev_err(&info->i2c->dev,
+        			"Unable to get irq number for GPIO %d, error %d\n",
+        				info->ID_gpio, info->OTG_USB_ID_irq);
+        		retval = info->OTG_USB_ID_irq;
+        		goto err_irq_gpio_dir;
+        	}
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		}else {
 			dev_err(&info->i2c->dev,
 				"OTG_USB_ID gpio not provided\n");
@@ -751,10 +775,13 @@ err_irq_gpio_req:
 	return retval;
 }
 
+<<<<<<< HEAD
 /*
    Add by yangrujin@bsp 2015/1/25, fix [BUG] RAIN-405: connect OTG and U-Disk to device,
    then shutdown device, device will auto reboot instead of pwroff.
  */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 #include <linux/notifier.h>
 #include <linux/reboot.h>
 static struct ptn5150_info *ginfo;
@@ -883,10 +910,13 @@ static int ptn5150_probe(
 		goto enable_irq_failed;
 	}
 
+<<<<<<< HEAD
 /*
  Add by yangrujin@bsp 2015/1/25, fix [BUG] RAIN-405: connect OTG and U-Disk to device,
  then shutdown device, device will auto reboot instead of pwroff.
  */
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     ginfo = info;
     register_reboot_notifier(&ptn5150_reboot_notifier);
 
@@ -897,7 +927,10 @@ enable_irq_failed:
 	free_irq(info->irq,NULL);
 	free_irq(info->OTG_USB_ID_irq,NULL);
 request_irq_failed:
+<<<<<<< HEAD
 	wake_lock_destroy(&info->otg_wl);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	device_remove_file(info->dev_t, &dev_attr_type);
 	device_destroy(info->fusb_class, 0);
 	class_destroy(info->fusb_class);
@@ -919,7 +952,10 @@ static int ptn5150_remove(struct i2c_client *client)
         disable_irq_wake(client->irq);
         free_irq(client->irq, info);
     }
+<<<<<<< HEAD
     wake_lock_destroy(&info->otg_wl);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     device_remove_file(info->dev_t, &dev_attr_type);
     device_destroy(info->fusb_class, 0);
     class_destroy(info->fusb_class);

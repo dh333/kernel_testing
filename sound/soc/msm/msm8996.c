@@ -37,6 +37,7 @@
 #include "../codecs/wcd9330.h"
 #include "../codecs/wcd9335.h"
 #include "../codecs/wsa881x.h"
+#include <sound/sounddebug.h>
 
 #define DRV_NAME "msm8996-asoc-snd"
 
@@ -48,7 +49,10 @@
 #define SAMPLING_RATE_192KHZ    192000
 #define SAMPLING_RATE_44P1KHZ   44100
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 //#define MSM8996_SPK_ON     1
 //#define MSM8996_HIFI_ON    1
 
@@ -91,7 +95,10 @@ static int msm_vi_feed_tx_ch = 2;
 static int msm_hdmi_rx_ch = 2;
 static int msm_proxy_rx_ch = 2;
 static int hdmi_rx_sample_rate = SAMPLING_RATE_48KHZ;
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 //static int msm_tert_mi2s_tx_ch = 2;
 
 static bool codec_reg_done;
@@ -299,6 +306,166 @@ static const char *const quat_mi2s_rx_ch_text[] = {"One", "Two", "Three",
 						   "Four"};
 
 
+static int pri_mi2s_sample_rate = SAMPLING_RATE_48KHZ;
+static int sec_mi2s_sample_rate = SAMPLING_RATE_48KHZ;
+static int tert_mi2s_sample_rate = SAMPLING_RATE_48KHZ;
+static int quat_mi2s_sample_rate = SAMPLING_RATE_48KHZ;
+
+static int pri_mi2s_bit_format = SNDRV_PCM_FORMAT_S16_LE;
+static int sec_mi2s_bit_format = SNDRV_PCM_FORMAT_S16_LE;
+static int tert_mi2s_bit_format = SNDRV_PCM_FORMAT_S16_LE;
+static int quat_mi2s_bit_format = SNDRV_PCM_FORMAT_S16_LE;
+//static int quat_mi2s_bit_format = SNDRV_PCM_FORMAT_S24_LE;
+
+#if 0
+static int msm_pri_mi2s_tx_ch = 2;
+static int msm_pri_mi2s_rx_ch = 2;
+static int msm_sec_mi2s_tx_ch = 2;
+static int msm_sec_mi2s_rx_ch = 4;
+static int msm_tert_mi2s_rx_ch = 2;
+
+static int msm_quat_mi2s_tx_ch = 2;
+#endif
+static int msm_quat_mi2s_tx_ch = 2;
+static int msm_tert_mi2s_tx_ch = 2;
+
+//static int msm_quat_mi2s_rx_ch = 6;
+static int msm_quat_mi2s_rx_ch = 2;
+
+/* Maintain struct aligned with the one from msm-dai-q6-v2.h */
+struct msm_mi2s_pdata {
+	u16 rx_sd_lines;
+	u16 tx_sd_lines;
+	u16 intf_id;
+	u16 slave;
+	u32 ext_mclk_rate;
+};
+
+struct msm_mi2s_data {
+	struct afe_clk_set mi2s_clk;
+	struct afe_clk_set mi2s_mclk;
+	atomic_t mi2s_rsc_ref;
+	int * sample_rate;
+	int * bit_format;
+};
+
+static struct msm_mi2s_data msm_pri_mi2s_data = {
+	.mi2s_clk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT,
+		Q6AFE_LPASS_IBIT_CLK_1_P536_MHZ,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.mi2s_mclk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_MCLK_1, /* TBD */
+		0,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.sample_rate = &pri_mi2s_sample_rate,
+	.bit_format = &pri_mi2s_bit_format,
+};
+
+static struct msm_mi2s_data msm_sec_mi2s_data = {
+	.mi2s_clk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT,
+		Q6AFE_LPASS_IBIT_CLK_1_P536_MHZ,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.mi2s_mclk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_MCLK_2, /* TBD */
+		0,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.sample_rate = &sec_mi2s_sample_rate,
+	.bit_format = &sec_mi2s_bit_format,
+};
+
+static struct msm_mi2s_data msm_tert_mi2s_data = {
+	.mi2s_clk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_TER_MI2S_IBIT,
+		Q6AFE_LPASS_IBIT_CLK_1_P536_MHZ,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.mi2s_mclk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_MCLK_3, /* TBD */
+		0,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.sample_rate = &tert_mi2s_sample_rate,
+	.bit_format = &tert_mi2s_bit_format,
+};
+
+static struct msm_mi2s_data msm_quat_mi2s_data = {
+	.mi2s_clk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_QUAD_MI2S_IBIT,
+		//su
+		Q6AFE_LPASS_IBIT_CLK_1_P536_MHZ,
+		//Q6AFE_LPASS_IBIT_CLK_3_P072_MHZ,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.mi2s_mclk = {
+		AFE_API_VERSION_I2S_CONFIG,
+		Q6AFE_LPASS_CLK_ID_MCLK_3, /* TBD */
+		0,
+		Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+		Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+		0,
+	},
+	.sample_rate = &quat_mi2s_sample_rate,
+	.bit_format = &quat_mi2s_bit_format,
+};
+
+
+static char const *mi2s_bit_format_text[] = {"S16_LE", "S24_LE"};
+static char const *mi2s_sample_rate_text[] = {"KHZ_8", "KHZ_16", "KHZ_32",
+						"KHZ_48", "KHZ_96", "KHZ_192"};
+
+static const char *const pri_mi2s_tx_ch_text[] = {"One", "Two", "Three",
+						  "Four"};
+static const char *const pri_mi2s_rx_ch_text[] = {"One", "Two", "Three",
+						  "Four"};
+static const char *const sec_mi2s_tx_ch_text[] = {"One", "Two", "Three",
+						  "Four"};
+static const char *const sec_mi2s_rx_ch_text[] = {"One", "Two", "Three",
+						  "Four"};
+static const char *const tert_mi2s_tx_ch_text[] = {"One", "Two", "Three",
+						   "Four"};
+static const char *const tert_mi2s_rx_ch_text[] = {"One", "Two", "Three",
+						   "Four"};
+
+//static const char *const quat_mi2s_tx_ch_text[] = {"One", "Two", "Three", "Four",
+//						   "Five", "Six", "Seven",
+//						   "Eight"};
+//static const char *const quat_mi2s_rx_ch_text[] = {"One", "Two", "Three", "Four",
+//						   "Five", "Six", "Seven",
+//						   "Eight"};
+
+static const char *const quat_mi2s_tx_ch_text[] = {"One", "Two", "Three",
+						   "Four"};
+static const char *const quat_mi2s_rx_ch_text[] = {"One", "Two", "Three",
+						   "Four"};
+
+
 struct msm8996_wsa881x_dev_info {
 	struct device_node *of_node;
 	u32 index;
@@ -334,7 +501,10 @@ static struct msm8996_liquid_dock_dev *msm8996_liquid_dock_dev;
 
 static void *adsp_state_notifier;
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2016/03/24, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 extern void tfa98xx_play_stop(void);
 
 static void *def_tasha_mbhc_cal(void);
@@ -1268,7 +1438,10 @@ static int msm_slim_0_tx_ch_put(struct snd_kcontrol *kcontrol,
 	return 1;
 }
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static int msm_quat_mi2s_rx_ch_get(struct snd_kcontrol *kcontrol,
 				struct snd_ctl_elem_value *ucontrol)
 {
@@ -1487,7 +1660,10 @@ static int msm8996_auxpcm_rate_put(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static int mi2_get_sample_rate(int sample_rate)
 {
 	int sample_rate_val = 0;
@@ -1713,9 +1889,12 @@ static int msm8996_hdmi_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 }
 
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
 
 //static int msm8996_mi2s_snd_startup(struct snd_pcm_substream *substream)
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static int legacy_msm8996_mi2s_snd_startup(struct snd_pcm_substream *substream)
 {
 	int ret = 0;
@@ -1739,9 +1918,13 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
 
 //static void msm8996_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static void legacy_msm8996_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 {
 	int ret = 0;
@@ -1757,7 +1940,10 @@ static void legacy_msm8996_mi2s_snd_shutdown(struct snd_pcm_substream *substream
 }
 
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static struct snd_soc_ops legacy_msm8996_mi2s_be_ops = {
 	.startup = legacy_msm8996_mi2s_snd_startup,
 	.shutdown = legacy_msm8996_mi2s_snd_shutdown,
@@ -1980,7 +2166,10 @@ static void msm8996_mi2s_snd_shutdown(struct snd_pcm_substream *substream,
 	pr_debug("%s: dai name %s %p  substream = %s  stream = %d port_id = %d\n",
 		 __func__, cpu_dai->name, cpu_dai->dev,substream->name,
 		 substream->stream, port_id);
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2016/04/01, close smart pa here, avoid seeking mute when playing video*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
     tfa98xx_play_stop();
 	if (atomic_dec_return(&msm_mi2s_data->mi2s_rsc_ref) == 0) {
 		msm_mi2s_data->mi2s_clk.enable = 0;
@@ -2026,8 +2215,13 @@ static const struct soc_enum msm8996_mi2s_snd_enum[] = {
 	SOC_ENUM_SINGLE_EXT(4, sec_mi2s_tx_ch_text),
 	SOC_ENUM_SINGLE_EXT(4, tert_mi2s_rx_ch_text),
 	SOC_ENUM_SINGLE_EXT(4, tert_mi2s_tx_ch_text),
+<<<<<<< HEAD
 	SOC_ENUM_SINGLE_EXT(4, quat_mi2s_rx_ch_text),
 	SOC_ENUM_SINGLE_EXT(4, quat_mi2s_tx_ch_text),
+=======
+	SOC_ENUM_SINGLE_EXT(8, quat_mi2s_rx_ch_text),
+	SOC_ENUM_SINGLE_EXT(8, quat_mi2s_tx_ch_text),
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 };
 
 static int msm_slim_5_rx_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
@@ -2106,7 +2300,10 @@ static int msm_slim_0_tx_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/12/1, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 static int msm_quat_mi2s_tx_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 					    struct snd_pcm_hw_params *params)
 {
@@ -2261,7 +2458,10 @@ static const struct snd_kcontrol_new msm_snd_controls[] = {
 			msm8996_hifi_put),
 	SOC_ENUM_EXT("VI_FEED_TX Channels", msm_snd_enum[12],
 			msm_vi_feed_tx_ch_get, msm_vi_feed_tx_ch_put),
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	SOC_ENUM_EXT("QUAT_MI2S BitWidth", msm8996_mi2s_snd_enum[0],
 			quat_mi2s_bit_format_get, quat_mi2s_bit_format_put),
 	SOC_ENUM_EXT("QUAT_MI2S SampleRate", msm8996_mi2s_snd_enum[1],
@@ -3598,7 +3798,10 @@ static struct snd_soc_dai_link msm8996_common_dai_links[] = {
 		.codec_name = "snd-soc-dummy",
 		.be_id = MSM_FRONTEND_DAI_VOICE2,
 	},
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/12/1, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	{
 		.name = "Quaternary MI2S TX_Hostless",
 		.stream_name = "Quaternary MI2S_TX Hostless Capture",
@@ -3827,7 +4030,10 @@ static struct snd_soc_dai_link msm8996_common_be_dai_links[] = {
 		.no_pcm = 1,
 		.dpcm_capture = 1,
 		.be_id = MSM_BACKEND_DAI_TERTIARY_MI2S_TX,
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 //		.be_hw_params_fixup = msm_tx_be_hw_params_fixup,
 //		.ops = &msm8996_mi2s_be_ops,
 		.be_hw_params_fixup = msm_tert_mi2s_tx_be_hw_params_fixup,
@@ -3835,7 +4041,10 @@ static struct snd_soc_dai_link msm8996_common_be_dai_links[] = {
 		.ignore_suspend = 1,
 	},
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 {
 		.name = LPASS_BE_QUAT_MI2S_RX,
 		.stream_name = "Quaternary MI2S Playback",
@@ -3856,6 +4065,21 @@ static struct snd_soc_dai_link msm8996_common_be_dai_links[] = {
 
 static struct snd_soc_dai_link msm8996_tasha_be_dai_links[] = {
 /*zhiguang.su@MultiMedia.AudioDrv, 2015-11-09, add for debug*/
+	/* Backend DAI Links */
+	{
+		.name = LPASS_BE_QUAT_MI2S_TX,
+		.stream_name = "Quaternary MI2S Capture",
+		.cpu_dai_name = "msm-dai-q6-mi2s.3",
+		.platform_name = "msm-pcm-routing",
+		.codec_name = "msm-stub-codec.1",
+		.codec_dai_name = "msm-stub-tx",
+		.no_pcm = 1,
+		.dpcm_capture = 1,
+		.be_id = MSM_BACKEND_DAI_QUATERNARY_MI2S_TX,
+		.be_hw_params_fixup = msm_quat_mi2s_tx_be_hw_params_fixup,
+		.ops = &msm8996_quat_mi2s_be_ops,
+		.ignore_suspend = 1,
+	},
 	/* Backend DAI Links */
 	{
 		.name = LPASS_BE_QUAT_MI2S_TX,
@@ -4107,7 +4331,10 @@ struct snd_soc_card snd_soc_card_tasha_msm8996 = {
 	.name		= "msm8996-tasha-snd-card",
 };
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 extern struct device_node *tfa_codec_np;
 static int msm8996_populate_dai_link_component_of_node(
 					struct snd_soc_card *card)
@@ -4170,7 +4397,10 @@ static int msm8996_populate_dai_link_component_of_node(
 				dai_link[i].cpu_dai_name = NULL;
 			}
 		}
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		if(!strcmp(dai_link[i].codec_name, "tfa98xx.3-0036"))
         {
             pr_err("%s codec_name=%s\n",__func__,dai_link[i].codec_name);
@@ -4513,7 +4743,10 @@ static int msm8996_asoc_machine_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, card);
 	snd_soc_card_set_drvdata(card, pdata);
 
+<<<<<<< HEAD
 /*zhiguang.su@MultiMedia.AudioDrv , 2015/10/21, add for pa*/
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	atomic_set(&msm_pri_mi2s_data.mi2s_rsc_ref, 0);
 	atomic_set(&msm_sec_mi2s_data.mi2s_rsc_ref, 0);

@@ -513,6 +513,7 @@ void mdss_dsi_phy_sw_reset(struct mdss_dsi_ctrl_pdata *ctrl)
 	}
 
 	sdata = ctrl->shared_data;
+<<<<<<< HEAD
 
 	/*
 	 * When operating in split display mode, make sure that the PHY reset
@@ -532,6 +533,27 @@ void mdss_dsi_phy_sw_reset(struct mdss_dsi_ctrl_pdata *ctrl)
 			pr_warn("%s: unable to get slave ctrl\n", __func__);
 	}
 
+=======
+
+	/*
+	 * When operating in split display mode, make sure that the PHY reset
+	 * is only done from the clock master. This will ensure that the PLL is
+	 * off when PHY reset is called.
+	 */
+	if (mdss_dsi_is_ctrl_clk_slave(ctrl))
+		return;
+
+	mdss_dsi_phy_sw_reset_sub(ctrl);
+
+	if (mdss_dsi_is_ctrl_clk_master(ctrl)) {
+		sctrl = mdss_dsi_get_ctrl_clk_slave();
+		if (sctrl)
+			mdss_dsi_phy_sw_reset_sub(sctrl);
+		else
+			pr_warn("%s: unable to get slave ctrl\n", __func__);
+	}
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	/* All other quirks go here */
 	if ((sdata->hw_rev == MDSS_DSI_HW_REV_103) &&
 		!mdss_dsi_is_hw_config_dual(sdata) &&
@@ -1120,6 +1142,7 @@ static void mdss_dsi_8996_phy_config(struct mdss_dsi_ctrl_pdata *ctrl)
 			mdss_dsi_8996_pll_source_standalone(ctrl);
 	}
 
+<<<<<<< HEAD
 	pinfo = &ctrl->panel_data.panel_info;
 	if (!(pinfo->allow_phy_power_off) && (pinfo->type == MIPI_CMD_PANEL)) {
 		data = MIPI_INP(ctrl->phy_io.base + DSIPHY_CMN_CTRL_0);
@@ -1127,6 +1150,9 @@ static void mdss_dsi_8996_phy_config(struct mdss_dsi_ctrl_pdata *ctrl)
 	} else {
 		MIPI_OUTP(ctrl->phy_io.base + DSIPHY_CMN_CTRL_0, 0x7f);
 	}
+=======
+	MIPI_OUTP(ctrl->phy_io.base + DSIPHY_CMN_CTRL_0, 0x7f);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	wmb(); /* make sure registers committed */
 }
 

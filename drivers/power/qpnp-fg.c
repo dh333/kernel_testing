@@ -5318,8 +5318,7 @@ static irqreturn_t fg_vbatt_low_handler(int irq, void *_chip)
 	struct fg_chip *chip = _chip;
 	bool vbatt_low_sts;
 
-	if (fg_debug_mask & FG_IRQS)
-		pr_info("vbatt-low triggered\n");
+	pr_info("vbatt-low triggered\n");
 
 	/* handle empty soc based on vbatt-low interrupt */
 	if (chip->use_vbat_low_empty_soc) {
@@ -5383,9 +5382,8 @@ static irqreturn_t fg_batt_missing_irq_handler(int irq, void *_chip)
 			chip->battery_missing = false;
 	}
 
-	if (fg_debug_mask & FG_IRQS)
-		pr_info("batt-missing triggered: %s\n",
-				batt_missing ? "missing" : "present");
+	pr_info("batt-missing triggered: %s\n",
+			batt_missing ? "missing" : "present");
 
 	if (chip->power_supply_registered)
 		power_supply_changed(&chip->bms_psy);
@@ -5456,8 +5454,7 @@ static irqreturn_t fg_first_soc_irq_handler(int irq, void *_chip)
 {
 	struct fg_chip *chip = _chip;
 
-	if (fg_debug_mask & FG_IRQS)
-		pr_info("triggered\n");
+	pr_info("triggered\n");
 
 	if (fg_est_dump)
 		schedule_work(&chip->dump_sram);
@@ -5963,7 +5960,6 @@ static int fg_config_esr_extract(struct fg_chip *chip, bool disable)
 	u8 val;
 
 	if (disable == chip->esr_extract_disabled) {
-		if (fg_debug_mask & FG_STATUS)
 			pr_info("ESR extract already %sabled\n",
 				disable ? "dis" : "en");
 		return 0;
@@ -6702,9 +6698,8 @@ static void check_empty_work(struct work_struct *work)
 
 		msoc = get_monotonic_soc_raw(chip);
 
-		if (fg_debug_mask & FG_STATUS)
-			pr_info("Vbatt_low: %d, msoc: %d\n", vbatt_low_sts,
-				msoc);
+		pr_info("Vbatt_low: %d, msoc: %d\n", vbatt_low_sts,
+			msoc);
 		if (vbatt_low_sts || (msoc == 0))
 			chip->soc_empty = true;
 		else
@@ -6719,8 +6714,7 @@ static void check_empty_work(struct work_struct *work)
 			chip->vbat_low_irq_enabled = true;
 		}
 	} else if (fg_is_batt_empty(chip)) {
-		if (fg_debug_mask & FG_STATUS)
-			pr_info("EMPTY SOC high\n");
+		pr_info("EMPTY SOC high\n");
 		chip->soc_empty = true;
 		if (chip->power_supply_registered)
 			power_supply_changed(&chip->bms_psy);

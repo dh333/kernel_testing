@@ -10,7 +10,6 @@
 
 #include <linux/fs.h>
 #include <linux/f2fs_fs.h>
-#include <trace/events/android_fs.h>
 
 #include "f2fs.h"
 #include "node.h"
@@ -26,7 +25,11 @@ bool f2fs_may_inline_data(struct inode *inode)
 	if (i_size_read(inode) > MAX_INLINE_DATA(inode))
 		return false;
 
+<<<<<<< HEAD
 	if (f2fs_post_read_required(inode))
+=======
+	if (f2fs_encrypted_file(inode))
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 		return false;
 
 	return true;
@@ -87,6 +90,7 @@ int f2fs_read_inline_data(struct inode *inode, struct page *page)
 {
 	struct page *ipage;
 
+<<<<<<< HEAD
 	if (trace_android_fs_dataread_start_enabled()) {
 		char *path, pathbuf[MAX_TRACE_PATHBUF_LEN];
 
@@ -100,9 +104,10 @@ int f2fs_read_inline_data(struct inode *inode, struct page *page)
 	}
 
 	ipage = f2fs_get_node_page(F2FS_I_SB(inode), inode->i_ino);
+=======
+	ipage = get_node_page(F2FS_I_SB(inode), inode->i_ino);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	if (IS_ERR(ipage)) {
-		trace_android_fs_dataread_end(inode, page_offset(page),
-					      PAGE_SIZE);
 		unlock_page(page);
 		return PTR_ERR(ipage);
 	}
@@ -119,10 +124,7 @@ int f2fs_read_inline_data(struct inode *inode, struct page *page)
 
 	if (!PageUptodate(page))
 		SetPageUptodate(page);
-
 	f2fs_put_page(ipage, 1);
-
-	trace_android_fs_dataread_end(inode, page_offset(page), PAGE_SIZE);
 	unlock_page(page);
 	return 0;
 }
@@ -242,6 +244,8 @@ int f2fs_write_inline_data(struct inode *inode, struct page *page)
 {
 	void *src_addr, *dst_addr;
 	struct dnode_of_data dn;
+	struct address_space *mapping = page_mapping(page);
+	unsigned long flags;
 	int err;
 
 	set_new_dnode(&dn, inode, NULL, NULL, 0);
@@ -263,7 +267,14 @@ int f2fs_write_inline_data(struct inode *inode, struct page *page)
 	kunmap_atomic(src_addr);
 	set_page_dirty(dn.inode_page);
 
+<<<<<<< HEAD
 	f2fs_clear_radix_tree_dirty_tag(page);
+=======
+	spin_lock_irqsave(&mapping->tree_lock, flags);
+	radix_tree_tag_clear(&mapping->page_tree, page_index(page),
+			     PAGECACHE_TAG_DIRTY);
+	spin_unlock_irqrestore(&mapping->tree_lock, flags);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	set_inode_flag(inode, FI_APPEND_WRITE);
 	set_inode_flag(inode, FI_DATA_EXIST);
@@ -347,7 +358,11 @@ struct f2fs_dir_entry *f2fs_find_in_inline_dir(struct inode *dir,
 	inline_dentry = inline_data_addr(dir, ipage);
 
 	make_dentry_ptr_inline(dir, &d, inline_dentry);
+<<<<<<< HEAD
 	de = f2fs_find_target_dentry(fname, namehash, NULL, &d);
+=======
+	de = find_target_dentry(fname, namehash, NULL, &d);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	unlock_page(ipage);
 	if (de)
 		*res_page = ipage;
@@ -366,7 +381,11 @@ int f2fs_make_empty_inline_dir(struct inode *inode, struct inode *parent,
 	inline_dentry = inline_data_addr(inode, ipage);
 
 	make_dentry_ptr_inline(inode, &d, inline_dentry);
+<<<<<<< HEAD
 	f2fs_do_make_empty_dir(inode, parent, &d);
+=======
+	do_make_empty_dir(inode, parent, &d);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	set_page_dirty(ipage);
 
@@ -412,8 +431,15 @@ static int f2fs_move_inline_dirents(struct inode *dir, struct page *ipage,
 	}
 
 	f2fs_wait_on_page_writeback(page, DATA, true);
+<<<<<<< HEAD
+=======
+	zero_user_segment(page, MAX_INLINE_DATA(dir), PAGE_SIZE);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	dentry_blk = page_address(page);
+
+	make_dentry_ptr_inline(dir, &src, inline_dentry);
+	make_dentry_ptr_block(dir, &dst, dentry_blk);
 
 	make_dentry_ptr_inline(dir, &src, inline_dentry);
 	make_dentry_ptr_block(dir, &dst, dentry_blk);
@@ -509,7 +535,11 @@ static int f2fs_move_rehashed_dirents(struct inode *dir, struct page *ipage,
 	}
 
 	memcpy(backup_dentry, inline_dentry, MAX_INLINE_DATA(dir));
+<<<<<<< HEAD
 	f2fs_truncate_inline_inode(dir, ipage, 0);
+=======
+	truncate_inline_inode(dir, ipage, 0);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	unlock_page(ipage);
 
@@ -525,7 +555,10 @@ static int f2fs_move_rehashed_dirents(struct inode *dir, struct page *ipage,
 	return 0;
 recover:
 	lock_page(ipage);
+<<<<<<< HEAD
 	f2fs_wait_on_page_writeback(ipage, NODE, true);
+=======
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	memcpy(inline_dentry, backup_dentry, MAX_INLINE_DATA(dir));
 	f2fs_i_depth_write(dir, 0);
 	f2fs_i_size_write(dir, MAX_INLINE_DATA(dir));
@@ -566,7 +599,11 @@ int f2fs_add_inline_entry(struct inode *dir, const struct qstr *new_name,
 	inline_dentry = inline_data_addr(dir, ipage);
 	make_dentry_ptr_inline(dir, &d, inline_dentry);
 
+<<<<<<< HEAD
 	bit_pos = f2fs_room_for_filename(d.bitmap, slots, d.max);
+=======
+	bit_pos = room_for_filename(d.bitmap, slots, d.max);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	if (bit_pos >= d.max) {
 		err = f2fs_convert_inline_dir(dir, ipage, inline_dentry);
 		if (err)

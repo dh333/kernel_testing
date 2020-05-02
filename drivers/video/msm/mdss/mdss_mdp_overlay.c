@@ -4245,7 +4245,7 @@ static ssize_t mdss_mdp_cmd_autorefresh_store(struct device *dev,
 		pr_err("kstrtoint failed. rc=%d\n", rc);
 		return rc;
 	}
-
+	else if(frame_cnt != ctl->autorefresh_frame_cnt){
 	rc = mdss_mdp_ctl_cmd_set_autorefresh(ctl, frame_cnt);
 	if (rc) {
 		pr_err("cmd_set_autorefresh failed, rc=%d, frame_cnt=%d\n",
@@ -4262,7 +4262,8 @@ static ssize_t mdss_mdp_cmd_autorefresh_store(struct device *dev,
 		mfd->mdp_sync_pt_data.threshold = 1;
 		mfd->mdp_sync_pt_data.retire_threshold = 1;
 	}
-
+		ctl->autorefresh_frame_cnt = frame_cnt;
+	}
 	pr_debug("setting cmd autorefresh to cnt=%d\n", frame_cnt);
 
 	return len;
@@ -6122,7 +6123,11 @@ ctl_stop:
 		 * retire_signal api checks for retire_cnt with sync_mutex lock.
 		 */
 
+<<<<<<< HEAD
 		flush_kthread_work(&mdp5_data->vsync_work);
+=======
+		 flush_kthread_work(&mdp5_data->vsync_work);
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	}
 
 	mutex_lock(&mdp5_data->ov_lock);
@@ -6439,7 +6444,11 @@ static int __vsync_retire_setup(struct msm_fb_data_type *mfd)
 	init_kthread_work(&mdp5_data->vsync_work, __vsync_retire_work_handler);
 
 	mdp5_data->thread = kthread_run(kthread_worker_fn,
+<<<<<<< HEAD
 					&mdp5_data->worker, "vsync_retire_work");
+=======
+		&mdp5_data->worker, "vsync_retire_work");
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 
 	if (IS_ERR(mdp5_data->thread)) {
 		pr_err("unable to start vsync thread\n");
@@ -6449,6 +6458,10 @@ static int __vsync_retire_setup(struct msm_fb_data_type *mfd)
 
 	sched_setscheduler(mdp5_data->thread, SCHED_FIFO, &param);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14eb53941c5374e2300b514b3a860507607404a0
 	mfd->mdp_sync_pt_data.get_retire_fence = __vsync_retire_get_fence;
 
 	mdp5_data->vsync_retire_handler.vsync_handler =
